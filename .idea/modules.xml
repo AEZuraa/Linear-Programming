@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Linear-Programming-Simplex-Method.iml" filepath="$PROJECT_DIR$/.idea/Linear-Programming-Simplex-Method.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Linear-Programming-Simplex-Method.iml" filepath="$PROJECT_DIR$/Linear-Programming-Simplex-Method.iml" />
     </modules>
   </component>
 </project>
