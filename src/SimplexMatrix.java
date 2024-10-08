@@ -41,4 +41,12 @@ public class SimplexMatrix {
 
         return false;
     }
+
+    public VectorSlice getObjectiveFunction(){
+        return new VectorSlice(methodMatrix.get(0), 0, methodMatrix.getColumns()-2);
+    }
+
+    public double getObjectiveFunctionValue(){
+        return methodMatrix.get(0, methodMatrix.getColumns()-1);
+    }
 }
