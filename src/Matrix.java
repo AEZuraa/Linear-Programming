@@ -1,6 +1,8 @@
 import Exceptions.DimensionsException;
 import jdk.jshell.spi.ExecutionControl;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 
 public class Matrix {
@@ -42,6 +44,22 @@ public class Matrix {
             throw new RuntimeException(e);
         }
         return result;
+    }
+
+    public Matrix(List<List<Double>> representation) throws DimensionsException {
+        rows = representation.size();
+        columns = representation.get(0).size();
+        lineRepresentation = new double[rows * columns];
+        int i = 0, j = 0;
+        for (List<Double> row : representation) {
+            if (row.size() != columns) {
+                throw new DimensionsException("All rows of matrix should have same dimension");
+            }
+            i++;
+            for (Double item : row) {
+                lineRepresentation[i * columns + j++] = item;
+            }
+        }
     }
 
     public Matrix combineTop(Vector augmentation) {
