@@ -5,16 +5,20 @@ public class SimplexMatrix {
     ColumnVector rightHandSide;
     RowVector objectiveFunction;
 
-    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide) throws ApplicationProblemException {
+    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, boolean isMax) throws ApplicationProblemException {
         if (!rightHandSide.all(item -> item >= 0)) {
             throw new ApplicationProblemException("Right hand side must be non negative for simplex method application");
         }
         methodMatrix = constrains
                 .combineRight(Matrix.Identity(constrains.rows))
                 .combineRight(rightHandSide)
-                .combineTop(objectiveFunction.multiply(-1));
+                .combineTop(isMax? objectiveFunction.multiply(-1): objectiveFunction);
         this.rightHandSide = new ColumnVector(methodMatrix, methodMatrix.columns - 1);
         this.objectiveFunction = methodMatrix.get(0);
+    }
+
+    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide) throws ApplicationProblemException {
+        this(objectiveFunction, constrains, rightHandSide, true);
     }
 
     public boolean iteration() throws ApplicationProblemException {
