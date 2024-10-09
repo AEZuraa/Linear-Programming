@@ -12,7 +12,8 @@ public class Main {
         try {
             SimplexMatrix solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide);
             while (solution.iteration()){}
-            System.out.println(solution.objectiveFunction);
+            System.out.println("Values of variables in optimal solution:\n" + solution.getObjectiveFunction());
+            System.out.println("Maximum value of the objective function:\n" + solution.getObjectiveFunctionValue());
         }catch (ApplicationProblemException e){
             System.out.println("The method is not applicable!");
         }

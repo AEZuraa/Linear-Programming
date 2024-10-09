@@ -1,7 +1,6 @@
 import Exceptions.DimensionsException;
 import jdk.jshell.spi.ExecutionControl;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -66,22 +65,6 @@ public class Matrix {
         return result;
     }
 
-    public Matrix(List<List<Double>> representation) throws DimensionsException {
-        rows = representation.size();
-        columns = representation.get(0).size();
-        lineRepresentation = new double[rows * columns];
-        int i = 0, j = 0;
-        for (List<Double> row : representation) {
-            if (row.size() != columns) {
-                throw new DimensionsException("All rows of matrix should have same dimension");
-            }
-            i++;
-            for (Double item : row) {
-                lineRepresentation[i * columns + j++] = item;
-            }
-        }
-    }
-
     public Matrix combineTop(Vector augmentation) {
         Matrix result = new Matrix(rows + 1, Math.max(columns, augmentation.size()));
         try {
@@ -115,6 +98,22 @@ public class Matrix {
         this.lineRepresentation = origin.lineRepresentation;
     }
 
+    public Matrix(List<List<Double>> representation) throws DimensionsException {
+        rows = representation.size();
+        columns = representation.get(0).size();
+        lineRepresentation = new double[rows * columns];
+        int i = 0, j = 0;
+        for (List<Double> row : representation) {
+            if (row.size() != columns) {
+                throw new DimensionsException("All rows of matrix should have same dimension");
+            }
+            i++;
+            for (Double item : row) {
+                lineRepresentation[i * columns + j++] = item;
+            }
+        }
+    }
+
     public Matrix clone() {
         Matrix clone = new Matrix(getRows(), getColumns());
         for (int i = 0; i < getRows(); i++) {
@@ -133,7 +132,7 @@ public class Matrix {
         Matrix result = new Matrix(er - sr, ec - sc);
         for (int i = sr; i < er; i++) {
             for (int j = sc; j < ec; j++) {
-                result.get(i - sr).set(j - sc, this.get(i).get(j));
+                result.set(i - sr,j - sc, this.get(i, j));
             }
         }
         return result;
