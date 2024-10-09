@@ -11,9 +11,29 @@ public class Matrix {
     protected int columns;
     protected double[] lineRepresentation;
 
-    public static Matrix scan(Scanner stream) throws ExecutionControl.NotImplementedException {
-        // TODO: This
-        throw new ExecutionControl.NotImplementedException("blah-blah");
+    public static Matrix scan(Scanner stream) {
+        String first = stream.nextLine();
+        if (!first.isEmpty()) {
+            int cols = first.split(" ").length;
+            Matrix result = new Matrix(1, cols);
+            for (int i = 0; i < cols; i++) {
+                result.set(0, i, Double.parseDouble(first.split(" ")[i]));
+            }
+            int row = 0;
+            while (true) {
+                String line = stream.nextLine();
+                if (line.isEmpty()) {
+                    break;
+                }
+                result.addRow();
+                row++;
+                for (int i = 0; i < cols; i++) {
+                    result.set(row, i, Double.parseDouble(line.split(" ")[i]));
+                }
+            }
+            return result;
+        }
+        return new Matrix(0,0);
     }
 
     public static Matrix Identity(int size) {
@@ -127,6 +147,8 @@ public class Matrix {
     }
 
     public void set(int row, int col, double value) throws IndexOutOfBoundsException {
+        int abs = getRows();
+        int saas = getColumns();
         if (row >= getRows() || col >= getColumns()) {
             throw new IndexOutOfBoundsException("Index is not reachable");
         }
@@ -218,6 +240,15 @@ public class Matrix {
                     + reference.rows + "x" + reference.columns + " into the ("
                     + startRow + ", " + startCol + ") position");
         }
+    }
+    private void addRow() {
+        rows++;
+        int newSize = rows * columns;
+        double[] newLineRepresentation = new double[newSize];
+        for (int i = 0; i < lineRepresentation.length; i++) {
+            newLineRepresentation[i] = lineRepresentation[i];
+        }
+        lineRepresentation = newLineRepresentation;
     }
 
     private void absorb(Vector reference, int startRow, int startCol, boolean isAsRow) throws DimensionsException {
