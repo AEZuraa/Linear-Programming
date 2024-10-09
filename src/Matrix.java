@@ -146,8 +146,6 @@ public class Matrix {
     }
 
     public void set(int row, int col, double value) throws IndexOutOfBoundsException {
-        int abs = getRows();
-        int saas = getColumns();
         if (row >= getRows() || col >= getColumns()) {
             throw new IndexOutOfBoundsException("Index is not reachable");
         }
@@ -229,8 +227,8 @@ public class Matrix {
 
     private void absorb(Matrix reference, int startRow, int startCol) throws DimensionsException {
         try {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < columns; j++) {
+            for (int i = 0; i < reference.rows; i++) {
+                for (int j = 0; j < reference.columns; j++) {
                     set(startRow + i, startCol + j, reference.get(i, j));
                 }
             }
@@ -240,6 +238,7 @@ public class Matrix {
                     + startRow + ", " + startCol + ") position");
         }
     }
+
     private void addRow() {
         rows++;
         int newSize = rows * columns;
@@ -255,8 +254,8 @@ public class Matrix {
         try {
             for (int i = 0; i < n; i++) {
                 set(
-                        startRow + (isAsRow ? i : 0),
-                        startCol + (isAsRow ? 0 : i),
+                        startRow + (isAsRow ? 0 : i),
+                        startCol + (isAsRow ? i : 0),
                         reference.get(i)
                 );
             }

@@ -6,7 +6,7 @@ public class SimplexMatrix {
     RowVector objectiveFunction;
 
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide) throws ApplicationProblemException {
-        if (rightHandSide.all(item -> item >= 0)) {
+        if (!rightHandSide.all(item -> item >= 0)) {
             throw new ApplicationProblemException("Right hand side must be non negative for simplex method application");
         }
         methodMatrix = constrains.combineRight(Matrix.Identity(constrains.rows - 1)).combineRight(rightHandSide).combineTop(objectiveFunction);

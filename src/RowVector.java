@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class RowVector implements Vector{
+public class RowVector implements Vector {
 
     private final Matrix matrix;
     private final int index;
@@ -12,12 +12,14 @@ public class RowVector implements Vector{
     }
 
     private RowVector(int n) {
-        matrix = new Matrix(n, 1);
+        matrix = new Matrix(1, n);
         index = 0;
     }
 
-    static RowVector scan(Scanner stream){
-        Double[] items = (Double[]) Arrays.stream(stream.nextLine().split(" ")).map(Double::parseDouble).toArray();
+    static RowVector scan(Scanner stream) {
+        double[] items = Arrays.stream(stream.nextLine().split(" "))
+                .mapToDouble(Double::parseDouble)
+                .toArray();
         RowVector result = new RowVector(items.length);
         for (int i = 0; i < items.length; i++) {
             result.set(i, items[i]);
@@ -45,19 +47,19 @@ public class RowVector implements Vector{
         ColumnVector result = new ColumnVector(size());
         int n = size();
         for (int i = 0; i < n; i++) {
-            result.set(i, get(i)*factor);
+            result.set(i, get(i) * factor);
         }
         return result;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         int n = size();
         for (int i = 0; i < n; i++) {
             sb.append(get(i)).append(' ');
         }
-        sb.deleteCharAt(sb.length()-1);
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 }
