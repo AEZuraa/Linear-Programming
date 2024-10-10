@@ -50,6 +50,41 @@ public class Matrix {
         return result;
     }
 
+    // Constructor to create a matrix with given dimensions (rows and columns)
+    public Matrix(int n, int m) {
+        this.rows = n;
+        this.columns = m;
+        this.isTransposed = false;
+        this.lineRepresentation = new double[n * m];
+    }
+
+    // !!! MUTABLE ENTRY COPY !!!
+    // Copy constructor to create a new matrix from an existing one
+    public Matrix(Matrix origin) {
+        this.rows = origin.rows;
+        this.columns = origin.columns;
+        this.isTransposed = origin.isTransposed;
+        this.lineRepresentation = origin.lineRepresentation;
+    }
+
+    // Constructor for Matrix class, initializes matrix from a 2D list representation
+    public Matrix(List<double[]> representation) throws DimensionsException {
+        rows = representation.size();
+        columns = representation.get(0).length;
+        lineRepresentation = new double[rows * columns];
+        int i = 0, j;
+        for (double[] row : representation) {
+            if (row.length != columns) {
+                throw new DimensionsException("All rows of matrix should have same dimension");
+            }
+            j = 0;
+            for (double item : row) {
+                lineRepresentation[i * columns + j++] = item;
+            }
+            i++;
+        }
+    }
+
     // Combines the current matrix with another matrix on the right.
     public Matrix combineRight(Matrix augmentation) {
         Matrix result = new Matrix(Math.max(rows, augmentation.rows), columns + augmentation.columns);
@@ -86,59 +121,17 @@ public class Matrix {
         return result;
     }
 
-    // Default constructor for creating an empty matrix
-    public Matrix() {
-        this.rows = 0;
-        this.columns = 0;
-        this.isTransposed = false;
-        this.lineRepresentation = null;
-    }
-
-    // Constructor to create a matrix with given dimensions (rows and columns)
-    public Matrix(int n, int m) {
-        this.rows = n;
-        this.columns = m;
-        this.isTransposed = false;
-        this.lineRepresentation = new double[n * m];
-    }
-
-    // !!! MUTABLE ENTRY COPY !!!
-    // Copy constructor to create a new matrix from an existing one
-    public Matrix(Matrix origin) {
-        this.rows = origin.rows;
-        this.columns = origin.columns;
-        this.isTransposed = origin.isTransposed;
-        this.lineRepresentation = origin.lineRepresentation;
-    }
-
-    // Constructor for Matrix class, initializes matrix from a 2D list representation
-    public Matrix(List<double[]> representation) throws DimensionsException {
-        rows = representation.size();
-        columns = representation.get(0).length;
-        lineRepresentation = new double[rows * columns];
-        int i = 0, j;
-        for (double[] row : representation) {
-            if (row.length != columns) {
-                throw new DimensionsException("All rows of matrix should have same dimension");
-            }
-            j = 0;
-            for (double item : row) {
-                lineRepresentation[i * columns + j++] = item;
-            }
-            i++;
-        }
-    }
-
     // Get a row from the matrix as a RowVector object
     public RowVector get(int index) {
         return new RowVector(this, index);
     }
 
-    public Matrix subMatrix(int sr, int sc, int er, int ec) throws IndexOutOfBoundsException {
-        Matrix result = new Matrix(er - sr, ec - sc);
-        for (int i = sr; i < er; i++) {
-            for (int j = sc; j < ec; j++) {
-                result.set(i - sr, j - sc, this.get(i, j));
+    // Get 2-dimensional matrix slice. Returns continuous part of a matrix within given region
+    public Matrix subMatrix(int startRow, int startColumn, int endRow, int endColumn) throws IndexOutOfBoundsException {
+        Matrix result = new Matrix(endRow - startRow, endColumn - startColumn);
+        for (int i = startRow; i < endRow; i++) {
+            for (int j = startColumn; j < endColumn; j++) {
+                result.set(i - startRow, j - startColumn, this.get(i, j));
             }
         }
         return result;
@@ -210,7 +203,8 @@ public class Matrix {
         return result;
     }
 
-    // Returns the representation of the matrix, with same entry (changes over transposed one WILL affect original one)
+    // Returns the transposed representation of the matrix, with same entry
+    // (changes over transposed one WILL affect original one)
     public Matrix transposed() {
         Matrix clone = new Matrix(this);
         clone.isTransposed = !isTransposed;
