@@ -27,7 +27,7 @@ public class ColumnVector implements Vector {
         index = 0;
     }
 
-    // Constructor for extracting a column from an existing matrix
+    // Constructor for referencing a column from an existing matrix
     ColumnVector(Matrix source, int column) {
         matrix = source;
         index = column;

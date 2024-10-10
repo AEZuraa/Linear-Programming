@@ -1,16 +1,29 @@
 import Exceptions.DimensionsException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 // Represents a matrix, providing methods to manipulate and perform operations on matrices
 public class Matrix {
-    protected boolean isTransposed; // whether the matrix is transposed
-    protected int rows; // number of rows
-    protected int columns; // number of columns
-    protected double[] lineRepresentation; // flat array representation of the matrix
+    // whether the matrix is transposed
+    protected boolean isTransposed;
+    // number of rows
+    protected int rows;
+    // number of columns
+    protected int columns;
+    // flat array representation of the matrix
+    protected double[] lineRepresentation;
 
-    // Scans input to create a matrix from multiple rows of data
+    /**
+     * Scans input to create a matrix from multiple rows of data.
+     * Each line of input = row in matrix. Space is separator between elements
+     * Empty line is considered as end of the matrix
+     * @param stream input stream
+     * @return matrix from input
+     * @throws NumberFormatException if input string cannot be considered as collection of doubles with space-separation
+     * @throws NoSuchElementException if input is ends before matrix is scanned
+     */
     public static Matrix scan(Scanner stream) {
         String first = stream.nextLine();
         if (!first.isEmpty()) {
@@ -36,7 +49,11 @@ public class Matrix {
         return new Matrix(0,0);
     }
 
-    // Generates an identity matrix of given size
+    /**
+     * Generates an identity matrix of given size
+     * @param size dimension of generating Identity
+     * @return Matrix (size x size) with ones on diagonal and zeros in all another places
+     */
     public static Matrix Identity(int size) {
         Matrix result = new Matrix(size, size);
         for (int i = 0; i < size; i++) {
@@ -45,7 +62,7 @@ public class Matrix {
         return result;
     }
 
-    // Combines the current matrix with another matrix on the right
+    // Combines the current matrix with another matrix on the right.
     public Matrix combineRight(Matrix augmentation) {
         Matrix result = new Matrix(Math.max(rows, augmentation.rows), columns + augmentation.columns);
         try {
@@ -123,7 +140,7 @@ public class Matrix {
         }
     }
 
-    // Method to clone a matrix
+    // Method to clone a matrix, clone changes will not affect original matrix
     public Matrix clone() {
         Matrix clone = new Matrix(getRows(), getColumns());
         for (int i = 0; i < getRows(); i++) {
@@ -196,7 +213,7 @@ public class Matrix {
         return result;
     }
 
-    // Multiply the matrix by a scalar factor
+    // Immutably multiply the matrix by a scalar factor
     public Matrix multiply(int factor) throws DimensionsException {
         Matrix result = new Matrix(getRows(), getColumns());
         try {
@@ -212,12 +229,12 @@ public class Matrix {
         return result;
     }
 
-    // Subtract another matrix from this matrix
+    // Immutably subtract another matrix from this matrix
     public Matrix subtract(Matrix another) throws DimensionsException {
         return add(another.multiply(-1));
     }
 
-    // Multiply this matrix by another matrix
+    // Immutably multiply this matrix by another matrix
     public Matrix multiply(Matrix another) throws DimensionsException {
         if (getColumns() != another.getRows()) {
             throw new DimensionsException("Error: the dimensional problem occurred in Matrix-Matrix multiplication");
@@ -237,7 +254,7 @@ public class Matrix {
         return result;
     }
 
-    // !!MUTABLE ENTRY COPY!! //
+    // Returns the representation of the matrix, with same entry (changes over transposed one WILL affect original one)
     public Matrix transposed() {
         Matrix clone = new Matrix(this);
         clone.isTransposed = !isTransposed;
@@ -258,7 +275,8 @@ public class Matrix {
                     + startRow + ", " + startCol + ") position");
         }
     }
-    // Adds an empty row to the matrix by increasing the number of rows and resizing the internal array
+
+    // Adds an empty row to the matrix by increasing the number of rows and resizing the matrix entry
     private void addRow() {
         rows++;
         int newSize = rows * columns;

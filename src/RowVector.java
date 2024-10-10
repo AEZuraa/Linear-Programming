@@ -7,7 +7,7 @@ public class RowVector implements Vector {
     private final Matrix matrix; // underlying matrix to hold vector data
     private final int index; // index of the row within the matrix
 
-    // Constructor for extracting a row from a matrix
+    // Constructor for referencing a row from a matrix
     public RowVector(Matrix matrix, int index) {
         this.matrix = matrix;
         this.index = index;

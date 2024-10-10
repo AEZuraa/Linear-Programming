@@ -26,17 +26,13 @@ public class Main {
             // Create SimplexMatrix and perform iterations to find the optimal solution
             SimplexMatrix solution;
             solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, 0.0001, mode);
-            while (!solution.iteration()) {
-                continue;
-            }
-            System.out.println(
-                    "Values of variables in optimal solution:\n"
-                            + solution.getObjectiveFunction()
-            );
+            solution.solve();
             System.out.println(
                     (mode.equals(OptimizationMode.MAX) ? "Maximum" : "Minimum")
                             + " value of the objective function:\n"
                             + solution.getObjectiveFunctionValue()
+                            + "\nAt the point:\n"
+                            + new VectorSlice(solution.getObjectiveFunction(), 0, objectiveFunction.size())
             );
         } catch (ApplicationProblemException e) {
             System.out.println("The method is not applicable!");

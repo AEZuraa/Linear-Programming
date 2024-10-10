@@ -5,17 +5,35 @@ import java.util.Iterator;
 
 // Class representing a matrix used in the Simplex method for solving linear optimization problems
 public class SimplexMatrix {
-    Matrix methodMatrix;  // Matrix containing constraints, slack variables, and right-hand side
-    ColumnVector rightHandSide;  // Column vector for the right-hand side of constraints
-    RowVector objectiveFunction; // Row vector for the objective function of the optimization problem
-    OptimizationMode mode; // Optimization mode for a problem
+    // Matrix containing constraints, slack variables, and right-hand side
+    Matrix methodMatrix;
+    // Column vector for the right-hand side of constraints
+    ColumnVector rightHandSide;
+    // Row vector for the objective function of the optimization problem
+    RowVector objectiveFunction;
+    // Optimization mode for a problem
+    OptimizationMode mode;
 
     Comparator<Double> cmp;
     int[] basis;
 
-    // Constructor for SimplexMatrix. Initializes with the given objective function, constraints, and right-hand side.
-    // 'isMax' specifies whether the problem is a maximization (true) or minimization (false).
-    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy, OptimizationMode mode) throws ApplicationProblemException {
+    /**
+     * Construct the simplex matrix
+     * @param objectiveFunction Coefficients vector of linear function in R^(objectiveFunction.size())
+     * @param constrains matrix of constrains over objectiveFunction variables
+     *                   (constrain - inequality in form "x_1 + ... + x_n <= u_j")
+     * @param rightHandSide vector of constrains right hand sides (u_1, u_2 ... u_m)
+     * @param accuracy accuracy for double comparison. Influence (not always) on number of iteration,
+     *                needed for find the optimal solution
+     * @param mode either solution for the maximization or for the minimization problem
+     * @throws ApplicationProblemException When simplex method is not applicable for the problem
+     *                                     (have unbounded max/min value)
+     */
+    public SimplexMatrix(Vector objectiveFunction,
+                         Matrix constrains,
+                         Vector rightHandSide,
+                         double accuracy,
+                         OptimizationMode mode) throws ApplicationProblemException {
         if (!rightHandSide.all(item -> item >= 0)) {
             throw new ApplicationProblemException("Right hand side must be non negative for simplex method application");
         }
@@ -34,24 +52,66 @@ public class SimplexMatrix {
         }
     }
 
-    // Constructor for SimplexMatrix that initializes with a specified accuracy and default optimization mode (MAX)
+    /**
+     * Construct the simplex matrix for solving the maximization problem
+     * @param objectiveFunction Coefficients vector of linear function in R^(objectiveFunction.size())
+     * @param constrains matrix of constrains over objectiveFunction variables
+     *                   (constrain - inequality in form "x_1 + ... + x_n <= u_j")
+     * @param rightHandSide vector of constrains right hand sides (u_1, u_2 ... u_m)
+     * @param accuracy accuracy for double comparison. Influence (not always) on number of iteration,
+     *                needed for find the optimal solution
+     * @throws ApplicationProblemException When simplex method is not applicable for the problem
+     *                                     (have unbounded max value)
+     */
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy) throws ApplicationProblemException {
         this(objectiveFunction, constrains, rightHandSide, accuracy, OptimizationMode.MAX);
     }
 
-    // Constructor for SimplexMatrix that initializes with default accuracy (0) and default optimization mode (MAX)
+    /**
+     * Construct the simplex matrix for solving the maximization problem with absolute accuracy.
+     * !! CAUTION: can produce infinite number of iterations !!
+     * @param objectiveFunction Coefficients vector of linear function in R^(objectiveFunction.size())
+     * @param constrains matrix of constrains over objectiveFunction variables
+     *                   (constrain - inequality in form "x_1 + ... + x_n <= u_j")
+     * @param rightHandSide vector of constrains right hand sides (u_1, u_2 ... u_m)
+     * @throws ApplicationProblemException When simplex method is not applicable for the problem
+     *                                     (have unbounded max value)
+     */
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide) throws ApplicationProblemException {
         this(objectiveFunction, constrains, rightHandSide, 0, OptimizationMode.MAX);
     }
 
-    // Constructor for SimplexMatrix that initializes with a specified optimization mode and default accuracy (0)
+    /**
+     * Construct the simplex matrix with absolute accuracy.
+     * !! CAUTION: can produce infinite number of iterations !!
+     * @param objectiveFunction Coefficients vector of linear function in R^(objectiveFunction.size())
+     * @param constrains matrix of constrains over objectiveFunction variables
+     *                   (constrain - inequality in form "x_1 + ... + x_n <= u_j")
+     * @param rightHandSide vector of constrains right hand sides (u_1, u_2 ... u_m)
+     * @param mode either solution for the maximization or for the minimization problem
+     * @throws ApplicationProblemException When simplex method is not applicable for the problem
+     *                                     (have unbounded max/min value)
+     */
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, OptimizationMode mode) throws ApplicationProblemException {
         this(objectiveFunction, constrains, rightHandSide, 0, mode);
     }
 
-    // Performs one iteration of the Simplex algorithm.
-    // Returns true if the optimal solution is found, false otherwise.
-    public boolean iteration() throws ApplicationProblemException {
+    /**
+     * Performs the iterative solution of the Simplex algorithm.
+     * !! Mutate the entry !!
+     * @throws ApplicationProblemException if unbounded solution was identified (function have unbounded max/min value)
+     */
+    public void solve() throws ApplicationProblemException{
+        while (!iteration()){continue;}
+    }
+
+    /**
+     * Performs one iteration of the Simplex algorithm.
+     * !! Mutate the entry !!
+     * @return true if the optimal solution is found, false otherwise.
+     * @throws ApplicationProblemException if unbounded solution was identified (function have unbounded max/min value)
+     */
+    protected boolean iteration() throws ApplicationProblemException {
         double[] ratios = new double[rightHandSide.size()];
         int enters = objectiveFunction.theMostIn(
                 (a, b) -> cmp.compare(a, b) < 0,
@@ -87,7 +147,10 @@ public class SimplexMatrix {
         return false;
     }
 
-    // Returns the objective function vector, excluding the right-hand side value
+    /**
+     * State of the solution
+     * @return the objective function vector on current iteration (values of all variables, including the slack ones)
+     */
     public Vector getObjectiveFunction() {
         Vector result = new RowVector(methodMatrix.getColumns() - 1);
         Iterator<Double> rhs = rightHandSide.iterator();
@@ -98,7 +161,10 @@ public class SimplexMatrix {
         return result;
     }
 
-    // Returns the value of the objective function (last element in the first row of the method matrix)
+    /**
+     * Value of the function
+     * @return the value of the objective function on current iteration
+     */
     public double getObjectiveFunctionValue() {
         return methodMatrix.get(0, methodMatrix.getColumns() - 1) * (mode.equals(OptimizationMode.MAX) ? 1 : -1);
     }
