@@ -7,20 +7,46 @@ import java.util.function.Predicate;
 
 // Interface for vectors, with various utility methods for vector operations
 public interface Vector extends Iterable<Double> {
-    // Get the value at a specific index
+    /**
+     * Get the value at a specific index
+     *
+     * @param index position of item in a vector
+     * @return value stored at the index
+     * @throws IndexOutOfBoundsException if position is not defined
+     */
     double get(int index) throws IndexOutOfBoundsException;
 
-    // Set the value at a specific index
+    /**
+     * Set the value at a specific index
+     *
+     * @param index position of item in a vector
+     * @param value new value, which will be assigned upon the position
+     * @throws IndexOutOfBoundsException if position is not defined
+     */
     void set(int index, double value) throws IndexOutOfBoundsException;
 
-    // Get the size of the vector
+    /**
+     * Get the size of the vector
+     *
+     * @return amount of items, stored inside the vector
+     */
     int size();
 
-    // Immutably multiply the vector by a scalar value
+    /**
+     * Immutably multiply the vector by a scalar value
+     *
+     * @param factor number on which all items in vector will be multiplied
+     * @return vector multiplied by factor
+     */
     Vector multiply(double factor);
 
-    // Perform dot product multiplication with another vector
-    default double multiply(Vector another) throws IndexOutOfBoundsException, DimensionsException {
+    /**
+     * Perform dot product multiplication with another vector
+     * @param another second operand for the dot product
+     * @return result of the dot product operation (x_1*y_1 + x_2*y_2 + ... + x_n*y_n)
+     * @throws DimensionsException If vectors have not the same direction
+     */
+    default double multiply(Vector another) throws DimensionsException {
         if (size() != another.size()) {
             throw new DimensionsException("Vectors of different size cannot be multiplied");
         }
@@ -31,7 +57,10 @@ public interface Vector extends Iterable<Double> {
         return dotProd;
     }
 
-    // Mutably scale the vector by a factor
+    /**
+     * Mutably scale the vector by a factor
+     * @param factor number to be multiplied on each vector element
+     */
     default void scaleBy(double factor) {
         int n = size();
         for (int i = 0; i < n; i++) {
@@ -39,15 +68,24 @@ public interface Vector extends Iterable<Double> {
         }
     }
 
-    // Mutably apply an operation to each element of the vector based on another vector
-    default void mutateBy(Vector operand, BiFunction<Double, Double, Double> shader){
+    /**
+     * Mutably apply an operation to each element of the vector based on another vector.
+     * x_i = shader(x_i, y_i)
+     * @param operand y vector
+     * @param shader function to be applied
+     */
+    default void mutateBy(Vector operand, BiFunction<Double, Double, Double> shader) {
         int n = size();
         for (int i = 0; i < n; i++) {
             set(i, shader.apply(get(i), operand.get(i)));
         }
     }
 
-    // Check if all elements of the vector satisfy a condition
+    /**
+     * Check if all elements of the vector satisfy a condition
+     * @param condition condition
+     * @return true if all elements satisfy the condition, false otherwise
+     */
     default boolean all(Predicate<Double> condition) {
         int n = size();
         for (int i = 0; i < n; i++) {
@@ -58,24 +96,20 @@ public interface Vector extends Iterable<Double> {
         return true;
     }
 
-    // Find the index of the element that stays at the top of linear order, formed by the given criteria within a range
-    default int theMostIn(BiPredicate<Double, Double> criteria, int from, int to){
+    /**
+     * Find the index of the element that stays at the top of linear order, formed by the given criteria
+     * @param criteria base predicate of a linear order
+     * @return last element in linear order from vector
+     */
+    default int theMost(BiPredicate<Double, Double> criteria) {
         int n = size();
-        if (from>to || to>n){
-            throw new IndexOutOfBoundsException("Vector with size " + n + " does not contain slice [" + from + ":" + to + "]");
-        }
         int res = 0;
-        for (int i = from; i < to; i++) {
+        for (int i = 0; i < n; i++) {
             if (criteria.test(get(i), get(res))) {
                 res = i;
             }
         }
         return res;
-    }
-
-    // Find the index of the element that stays at the top of linear order, formed by the given criteria
-    default int theMost(BiPredicate<Double, Double> criteria){
-        return theMostIn(criteria, 0, size());
     }
 
     @Override

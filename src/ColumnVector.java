@@ -1,12 +1,25 @@
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 // Represents a column vector, used for storing and manipulating column data
 public class ColumnVector implements Vector {
-    private final Matrix matrix; // underlying matrix to hold vector data
-    private final int index; // index of the column within the matrix
+    // underlying matrix to hold vector data
+    private final Matrix matrix;
+    // index of the column within the matrix
+    private final int index;
 
     // Method to scan input from user and create a ColumnVector
+    /**
+     * Scans input to create a vector from multiple rows of data.
+     * Caret must point to start of the new line.
+     * Each line of input = item in vector. Each line should consist from one number.
+     * Empty line is considered as end of the vector
+     * @param stream input stream
+     * @return vector from input
+     * @throws NumberFormatException if input stream cannot be considered as collection of doubles written in column
+     * @throws NoSuchElementException if input is ends before matrix is scanned
+     */
     public static ColumnVector scan(Scanner stream) {
         ArrayList<Double> input = new ArrayList<>();
         String line;
@@ -21,13 +34,21 @@ public class ColumnVector implements Vector {
         return result;
     }
 
-    // Constructor for creating an empty ColumnVector of size n
+    /**
+     * Constructor for creating an empty ColumnVector of given size
+     * @param n size of the vector
+     */
     ColumnVector(int n) {
         matrix = new Matrix(n, 1);
         index = 0;
     }
 
-    // Constructor for referencing a column from an existing matrix
+    /**
+     * Constructor for referencing a column from a matrix.
+     * Does not copy the items and mutable operations mutate the matrix entry
+     * @param source matrix, which column will be assigned
+     * @param column index of column in present matrix
+     */
     ColumnVector(Matrix source, int column) {
         matrix = source;
         index = column;

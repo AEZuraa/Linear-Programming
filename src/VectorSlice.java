@@ -1,11 +1,24 @@
 // Class representing a slice (subsection) of a vector
 public class VectorSlice implements Vector {
-    Vector vector; // Reference to the original vector
-    int start; // Start index of the slice
-    int stop; // End index of the slice
+    // Reference to the original vector
+    Vector vector;
+    // Start index of the slice
+    int start;
+    // End index of the slice
+    int stop;
 
-    // Constructor to create a slice from an existing vector
+    /**
+     * Constructor to create a slice from an existing vector. Right border is exclusive
+     * @param origin vector to be sliced
+     * @param start index which will be the first item of the slice
+     * @param stop index after the last element of the slice (with respect to the origin)
+     * @throws IndexOutOfBoundsException if origin vector cannot contains slice
+     */
     public VectorSlice(Vector origin, int start, int stop) {
+        if (start > stop || stop > origin.size()) {
+            throw new IndexOutOfBoundsException("Vector with size " + origin.size()
+                    + " does not contain slice [" + start + ":" + stop + ")");
+        }
         vector = origin;
         this.start = start;
         this.stop = stop;

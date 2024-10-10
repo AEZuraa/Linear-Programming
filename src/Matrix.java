@@ -17,6 +17,7 @@ public class Matrix {
 
     /**
      * Scans input to create a matrix from multiple rows of data.
+     * Caret must point to start of the new line.
      * Each line of input = row in matrix. Space is separator between elements
      * Empty line is considered as end of the matrix
      * @param stream input stream

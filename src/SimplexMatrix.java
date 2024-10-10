@@ -8,9 +8,9 @@ public class SimplexMatrix {
     // Matrix containing constraints, slack variables, and right-hand side
     Matrix methodMatrix;
     // Column vector for the right-hand side of constraints
-    ColumnVector rightHandSide;
+    Vector rightHandSide;
     // Row vector for the objective function of the optimization problem
-    RowVector objectiveFunction;
+    Vector objectiveFunction;
     // Optimization mode for a problem
     OptimizationMode mode;
 
@@ -42,7 +42,7 @@ public class SimplexMatrix {
                 .combineRight(rightHandSide)
                 .combineTop(mode.equals(OptimizationMode.MAX) ? objectiveFunction.multiply(-1) : objectiveFunction);
         this.rightHandSide = new ColumnVector(methodMatrix, methodMatrix.getColumns() - 1);
-        this.objectiveFunction = methodMatrix.get(0);
+        this.objectiveFunction = new VectorSlice(methodMatrix.get(0), 0, methodMatrix.getColumns());
         cmp = new DoublePreciseComparator(accuracy);
         this.mode = mode;
         basis = new int[constrains.getRows()];
@@ -113,10 +113,7 @@ public class SimplexMatrix {
      */
     protected boolean iteration() throws ApplicationProblemException {
         double[] ratios = new double[rightHandSide.size()];
-        int enters = objectiveFunction.theMostIn(
-                (a, b) -> cmp.compare(a, b) < 0,
-                0,
-                objectiveFunction.size() - 1);
+        int enters = objectiveFunction.theMost((a, b) -> cmp.compare(a, b) < 0);
         if (cmp.compare(objectiveFunction.get(enters), 0d) >= 0) {
             return true;
         }
