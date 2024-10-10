@@ -1,18 +1,18 @@
 import Exceptions.ApplicationProblemException;
 
-import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        boolean isMaximization;
+        OptimizationMode mode;
         while (true) {
             try {
-                System.out.println("Enter 0 for minimization or any another number for maximization");
-                isMaximization = (0 != Integer.parseInt(scanner.nextLine()));
+                System.out.println("Enter \"min\" for minimization either \"max\" for maximization");
+                mode = OptimizationMode.valueOf(scanner.nextLine().trim().toUpperCase());
                 break;
-            } catch (NumberFormatException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         System.out.println("Enter objective function coefficients (vector):");
         Vector objectiveFunction = RowVector.scan(scanner);
@@ -22,7 +22,7 @@ public class Main {
         Vector rightHandSide = RowVector.scan(scanner);
         try {
             SimplexMatrix solution;
-            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, 0.0001, isMaximization);
+            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, 0.0001, mode);
             while (!solution.iteration()) {
                 continue;
             }
@@ -31,9 +31,9 @@ public class Main {
                             + solution.getObjectiveFunction()
             );
             System.out.println(
-                    (isMaximization? "Maximum": "Minimum")
-                    + " value of the objective function:\n"
-                    + solution.getObjectiveFunctionValue()
+                    (mode.equals(OptimizationMode.MAX) ? "Maximum" : "Minimum")
+                            + " value of the objective function:\n"
+                            + solution.getObjectiveFunctionValue()
             );
         } catch (ApplicationProblemException e) {
             System.out.println("The method is not applicable!");

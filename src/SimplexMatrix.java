@@ -1,39 +1,46 @@
 import Exceptions.ApplicationProblemException;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
 public class SimplexMatrix {
     Matrix methodMatrix;
     ColumnVector rightHandSide;
     RowVector objectiveFunction;
+    OptimizationMode mode;
+
     Comparator<Double> cmp;
+    int[] basis;
 
-    boolean isMaximization;
-
-    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy, boolean isMax) throws ApplicationProblemException {
+    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy, OptimizationMode mode) throws ApplicationProblemException {
         if (!rightHandSide.all(item -> item >= 0)) {
             throw new ApplicationProblemException("Right hand side must be non negative for simplex method application");
         }
         methodMatrix = constrains
-                .combineRight(Matrix.Identity(constrains.rows))
+                .combineRight(Matrix.Identity(constrains.getRows()))
                 .combineRight(rightHandSide)
-                .combineTop(isMax ? objectiveFunction.multiply(-1) : objectiveFunction);
-        this.rightHandSide = new ColumnVector(methodMatrix, methodMatrix.columns - 1);
+                .combineTop(mode.equals(OptimizationMode.MAX) ? objectiveFunction.multiply(-1) : objectiveFunction);
+        this.rightHandSide = new ColumnVector(methodMatrix, methodMatrix.getColumns() - 1);
         this.objectiveFunction = methodMatrix.get(0);
         cmp = new DoublePreciseComparator(accuracy);
-        isMaximization = isMax;
+        this.mode = mode;
+        basis = new int[constrains.getRows()];
+        int componentsAmount = objectiveFunction.size();
+        for (int i = 0; i < basis.length; i++) {
+            basis[i] = componentsAmount + i;
+        }
     }
 
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy) throws ApplicationProblemException {
-        this(objectiveFunction, constrains, rightHandSide, accuracy, true);
+        this(objectiveFunction, constrains, rightHandSide, accuracy, OptimizationMode.MAX);
     }
 
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide) throws ApplicationProblemException {
-        this(objectiveFunction, constrains, rightHandSide, 0, true);
+        this(objectiveFunction, constrains, rightHandSide, 0, OptimizationMode.MAX);
     }
 
-    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, boolean isMax) throws ApplicationProblemException {
-        this(objectiveFunction, constrains, rightHandSide, 0, isMax);
+    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, OptimizationMode mode) throws ApplicationProblemException {
+        this(objectiveFunction, constrains, rightHandSide, 0, mode);
     }
 
     public boolean iteration() throws ApplicationProblemException {
@@ -61,18 +68,28 @@ public class SimplexMatrix {
         }
         pivotRow.scaleBy(1 / methodMatrix.get(leaves, enters));
         for (int i = 0; i < methodMatrix.rows; i++) {
+            if (i == leaves) {
+                continue;
+            }
             double pivotColumnElement = pivotColumn.get(i);
             methodMatrix.get(i).mutateBy(pivotRow, (current, pivot) -> current - pivot * pivotColumnElement);
         }
+        basis[leaves - 1] = enters;
 
         return false;
     }
 
-    public VectorSlice getObjectiveFunction() {
-        return new VectorSlice(methodMatrix.get(0), 0, methodMatrix.getColumns() - 1);
+    public Vector getObjectiveFunction() {
+        Vector result = new RowVector(methodMatrix.getColumns() - 1);
+        Iterator<Double> rhs = rightHandSide.iterator();
+        rhs.next();
+        for (int index : basis) {
+            result.set(index, rhs.next());
+        }
+        return result;
     }
 
     public double getObjectiveFunctionValue() {
-        return methodMatrix.get(0, methodMatrix.getColumns() - 1) * (isMaximization ? 1 : -1);
+        return methodMatrix.get(0, methodMatrix.getColumns() - 1) * (mode.equals(OptimizationMode.MAX) ? 1 : -1);
     }
 }

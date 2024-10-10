@@ -11,7 +11,7 @@ public class RowVector implements Vector {
         this.index = index;
     }
 
-    private RowVector(int n) {
+    public RowVector(int n) {
         matrix = new Matrix(1, n);
         index = 0;
     }
