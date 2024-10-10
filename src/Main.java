@@ -36,7 +36,6 @@ public class Main {
             );
         } catch (ApplicationProblemException e) {
             System.out.println("The method is not applicable!");
-            System.err.println(e.getMessage());
         }
     }
 }

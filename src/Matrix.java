@@ -1,8 +1,6 @@
 import Exceptions.DimensionsException;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.*;
 
 // Represents a matrix, providing methods to manipulate and perform operations on matrices
 public class Matrix {
@@ -20,34 +18,23 @@ public class Matrix {
      * Caret must point to start of the new line.
      * Each line of input = row in matrix. Space is separator between elements
      * Empty line is considered as end of the matrix
+     *
      * @param stream input stream
      * @return matrix from input
-     * @throws NumberFormatException if input string cannot be considered as collection of doubles with space-separation
+     * @throws NumberFormatException  if input string cannot be considered as collection of doubles with space-separation
      * @throws NoSuchElementException if input is ends before matrix is scanned
+     * @throws DimensionsException if rows consist from not equal amount of elements
      */
-    public static Matrix scan(Scanner stream) {
-        String first = stream.nextLine();
-        if (!first.isEmpty()) {
-            int cols = first.split(" ").length;
-            Matrix result = new Matrix(1, cols);
-            for (int i = 0; i < cols; i++) {
-                result.set(0, i, Double.parseDouble(first.split(" ")[i]));
-            }
-            int row = 0;
-            while (true) {
-                String line = stream.nextLine();
-                if (line.isEmpty()) {
-                    break;
-                }
-                result.addRow();
-                row++;
-                for (int i = 0; i < cols; i++) {
-                    result.set(row, i, Double.parseDouble(line.split(" ")[i]));
-                }
-            }
-            return result;
+    public static Matrix scan(Scanner stream) throws DimensionsException {
+        String line;
+        ArrayList<double[]> outRepresentation = new ArrayList<>();
+        while (!(line = stream.nextLine()).isEmpty()) {
+            outRepresentation.add(
+                    Arrays.stream(line.split(" "))
+                            .mapToDouble(Double::parseDouble)
+                            .toArray());
         }
-        return new Matrix(0,0);
+        return new Matrix(outRepresentation);
     }
 
     /**
@@ -125,19 +112,20 @@ public class Matrix {
     }
 
     // Constructor for Matrix class, initializes matrix from a 2D list representation
-    public Matrix(List<List<Double>> representation) throws DimensionsException {
+    public Matrix(List<double[]> representation) throws DimensionsException {
         rows = representation.size();
-        columns = representation.get(0).size();
+        columns = representation.get(0).length;
         lineRepresentation = new double[rows * columns];
-        int i = 0, j = 0;
-        for (List<Double> row : representation) {
-            if (row.size() != columns) {
+        int i = 0, j;
+        for (double[] row : representation) {
+            if (row.length != columns) {
                 throw new DimensionsException("All rows of matrix should have same dimension");
             }
-            i++;
-            for (Double item : row) {
+            j = 0;
+            for (double item : row) {
                 lineRepresentation[i * columns + j++] = item;
             }
+            i++;
         }
     }
 
@@ -161,7 +149,7 @@ public class Matrix {
         Matrix result = new Matrix(er - sr, ec - sc);
         for (int i = sr; i < er; i++) {
             for (int j = sc; j < ec; j++) {
-                result.set(i - sr,j - sc, this.get(i, j));
+                result.set(i - sr, j - sc, this.get(i, j));
             }
         }
         return result;
