@@ -26,8 +26,15 @@ public class Main {
             while (!solution.iteration()) {
                 continue;
             }
-            System.out.println("Values of variables in optimal solution:\n" + solution.getObjectiveFunction());
-            System.out.println("Maximum value of the objective function:\n" + solution.getObjectiveFunctionValue());
+            System.out.println(
+                    "Values of variables in optimal solution:\n"
+                            + solution.getObjectiveFunction()
+            );
+            System.out.println(
+                    (isMaximization? "Maximum": "Minimum")
+                    + " value of the objective function:\n"
+                    + solution.getObjectiveFunctionValue()
+            );
         } catch (ApplicationProblemException e) {
             System.out.println("The method is not applicable!");
             System.err.println(e.getMessage());

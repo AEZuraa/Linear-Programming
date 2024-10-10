@@ -6,8 +6,9 @@ public class SimplexMatrix {
     Matrix methodMatrix;
     ColumnVector rightHandSide;
     RowVector objectiveFunction;
-
     Comparator<Double> cmp;
+
+    boolean isMaximization;
 
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy, boolean isMax) throws ApplicationProblemException {
         if (!rightHandSide.all(item -> item >= 0)) {
@@ -20,6 +21,7 @@ public class SimplexMatrix {
         this.rightHandSide = new ColumnVector(methodMatrix, methodMatrix.columns - 1);
         this.objectiveFunction = methodMatrix.get(0);
         cmp = new DoublePreciseComparator(accuracy);
+        isMaximization = isMax;
     }
 
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy) throws ApplicationProblemException {
@@ -48,12 +50,13 @@ public class SimplexMatrix {
         // do not consider ratio z/z()
         for (int i = 1; i < methodMatrix.rows; i++) {
             ratios[i] = rightHandSide.get(i) / pivotColumn.get(i);
-            if (cmp.compare(ratios[i], ratios[leaves]) < 0 && cmp.compare(ratios[i], 0d) > 0) {
+            if ((cmp.compare(ratios[i], ratios[leaves]) < 0 || cmp.compare(ratios[leaves], 0d) <= 0)
+                    && cmp.compare(ratios[i], 0d) > 0) {
                 leaves = i;
             }
         }
         RowVector pivotRow = methodMatrix.get(leaves);
-        if (leaves == 1 && cmp.compare(ratios[leaves], 0d) <= 0) {
+        if (cmp.compare(ratios[leaves], 0d) <= 0) {
             throw new ApplicationProblemException("Unbounded solution");
         }
         pivotRow.scaleBy(1 / methodMatrix.get(leaves, enters));
@@ -70,6 +73,6 @@ public class SimplexMatrix {
     }
 
     public double getObjectiveFunctionValue() {
-        return methodMatrix.get(0, methodMatrix.getColumns() - 1);
+        return methodMatrix.get(0, methodMatrix.getColumns() - 1) * (isMaximization ? 1 : -1);
     }
 }
