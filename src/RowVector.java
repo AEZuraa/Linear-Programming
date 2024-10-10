@@ -31,25 +31,21 @@ public class RowVector implements Vector {
         return result;
     }
 
-    // Get value at specific column index in the row
     @Override
     public double get(int columnIndex) throws IndexOutOfBoundsException {
         return matrix.get(index, columnIndex);
     }
 
-    // Set value at specific column index in the row
     @Override
     public void set(int columnIndex, double value) throws IndexOutOfBoundsException {
         matrix.set(index, columnIndex, value);
     }
 
-    // Return the size of the row vector
     @Override
     public int size() {
         return matrix.isTransposed ? matrix.rows : matrix.columns;
     }
 
-    // Multiply the vector by a scalar and return a new vector
     @Override
     public Vector multiply(double factor) {
         ColumnVector result = new ColumnVector(size());
@@ -60,7 +56,6 @@ public class RowVector implements Vector {
         return result;
     }
 
-    // Convert row vector to string
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

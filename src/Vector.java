@@ -16,7 +16,7 @@ public interface Vector extends Iterable<Double> {
     // Get the size of the vector
     int size();
 
-    // Multiply the vector by a scalar value
+    // Immutably multiply the vector by a scalar value
     Vector multiply(double factor);
 
     // Perform dot product multiplication with another vector
@@ -31,7 +31,7 @@ public interface Vector extends Iterable<Double> {
         return dotProd;
     }
 
-    // Scale the vector by a factor
+    // Mutably scale the vector by a factor
     default void scaleBy(double factor) {
         int n = size();
         for (int i = 0; i < n; i++) {
@@ -39,7 +39,7 @@ public interface Vector extends Iterable<Double> {
         }
     }
 
-    // Apply an operation to each element of the vector based on another vector
+    // Mutably apply an operation to each element of the vector based on another vector
     default void mutateBy(Vector operand, BiFunction<Double, Double, Double> shader){
         int n = size();
         for (int i = 0; i < n; i++) {
@@ -58,7 +58,7 @@ public interface Vector extends Iterable<Double> {
         return true;
     }
 
-    // Find the index of the element that satisfies the given criteria within a range
+    // Find the index of the element that stays at the top of linear order, formed by the given criteria within a range
     default int theMostIn(BiPredicate<Double, Double> criteria, int from, int to){
         int n = size();
         if (from>to || to>n){
@@ -73,12 +73,12 @@ public interface Vector extends Iterable<Double> {
         return res;
     }
 
-    // Find the index of the element that satisfies the given criteria
+    // Find the index of the element that stays at the top of linear order, formed by the given criteria
     default int theMost(BiPredicate<Double, Double> criteria){
         return theMostIn(criteria, 0, size());
     }
 
-    // Return an iterator for the vector
+    @Override
     default Iterator<Double> iterator() {
         return new Iterator<>() {
             int current = 0;

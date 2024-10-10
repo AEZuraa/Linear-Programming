@@ -11,7 +11,6 @@ public class VectorSlice implements Vector {
         this.stop = stop;
     }
 
-    // Get the value from the slice at the specified index
     @Override
     public double get(int index) throws IndexOutOfBoundsException {
         if (index >= size()) {
@@ -20,7 +19,6 @@ public class VectorSlice implements Vector {
         return vector.get(index + start);
     }
 
-    // Set the value in the slice at the specified index
     @Override
     public void set(int index, double value) throws IndexOutOfBoundsException {
         if (index >= size()) {
@@ -29,13 +27,11 @@ public class VectorSlice implements Vector {
         vector.set(index + start, value);
     }
 
-    // Get the size of the slice
     @Override
     public int size() {
         return stop - start;
     }
 
-    // Multiply the slice by a scalar factor and return a new vector
     @Override
     public Vector multiply(double factor) {
         ColumnVector result = new ColumnVector(size());
@@ -46,7 +42,6 @@ public class VectorSlice implements Vector {
         return result;
     }
 
-    // Override the toString method to display the slice values
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();

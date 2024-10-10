@@ -33,19 +33,16 @@ public class ColumnVector implements Vector {
         index = column;
     }
 
-    // Get value at specific index in the column
     @Override
     public double get(int index) throws IndexOutOfBoundsException {
         return matrix.get(index, this.index);
     }
 
-    // Set value at specific index in the column
     @Override
     public void set(int index, double value) throws IndexOutOfBoundsException {
         matrix.set(index, this.index, value);
     }
 
-    // Multiply vector by a scalar factor and return a new vector
     @Override
     public Vector multiply(double factor) {
         ColumnVector result = new ColumnVector(size());
@@ -56,13 +53,11 @@ public class ColumnVector implements Vector {
         return result;
     }
 
-    // Return the size of the vector
     @Override
     public int size() {
         return matrix.isTransposed ? matrix.columns : matrix.rows;
     }
 
-    // Convert vector to a string representation
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
