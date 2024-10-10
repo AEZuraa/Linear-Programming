@@ -2,8 +2,10 @@ import Exceptions.ApplicationProblemException;
 
 import java.util.Scanner;
 
+// Main entry point of the program
 public class Main {
     public static void main(String[] args) {
+        // Reading the objective function, constraints matrix, and right-hand side values from input
         Scanner scanner = new Scanner(System.in);
         OptimizationMode mode;
         while (true) {
@@ -21,6 +23,7 @@ public class Main {
         System.out.println("Enter right hand sides for constrains (vector):");
         Vector rightHandSide = RowVector.scan(scanner);
         try {
+            // Create SimplexMatrix and perform iterations to find the optimal solution
             SimplexMatrix solution;
             solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, 0.0001, mode);
             while (!solution.iteration()) {
