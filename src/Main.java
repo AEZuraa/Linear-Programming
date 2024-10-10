@@ -1,27 +1,26 @@
 import Exceptions.ApplicationProblemException;
-import jdk.jshell.spi.ExecutionControl;
 
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws ExecutionControl.NotImplementedException {
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int isMaximization = -1;
-        while (isMaximization != 0 && isMaximization != 1) {
+        boolean isMaximization;
+        while (true) {
             try {
                 System.out.println("Enter 0 for minimization or 1 for maximization");
-                isMaximization = Integer.parseInt(scanner.next());
-            } catch (NumberFormatException e) {
-                continue;
-            }
+                isMaximization = (1 == Integer.parseInt(scanner.next()));
+                break;
+            } catch (NumberFormatException ignored) {}
         }
         Vector objectiveFunction = ColumnVector.scan(scanner);
         Matrix constrains = Matrix.scan(scanner);
         Vector rightHandSide = RowVector.scan(scanner);
         try {
             SimplexMatrix solution;
-            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, isMaximization == 1);
+            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, isMaximization);
             while (!solution.iteration(0.001)) {
+                continue;
             }
             System.out.println("Values of variables in optimal solution:\n" + solution.getObjectiveFunction());
             System.out.println("Maximum value of the objective function:\n" + solution.getObjectiveFunctionValue());
