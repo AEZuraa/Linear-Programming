@@ -8,8 +8,8 @@ public class Main {
         boolean isMaximization;
         while (true) {
             try {
-                System.out.println("Enter 0 for minimization or 1 for maximization");
-                isMaximization = (1 == Integer.parseInt(scanner.next()));
+                System.out.println("Enter 0 for minimization or any another number for maximization");
+                isMaximization = (0 != Integer.parseInt(scanner.next()));
                 break;
             } catch (NumberFormatException ignored) {}
         }
