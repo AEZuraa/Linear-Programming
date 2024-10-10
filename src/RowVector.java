@@ -2,11 +2,11 @@ import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-// Represents a row vector, used for storing and manipulating row data
+/** Represents a row vector, used for storing and manipulating row data */
 public class RowVector implements Vector {
-    // underlying matrix to hold vector data
+    /** underlying matrix to hold vector data */
     private final Matrix matrix;
-    // index of the row within the matrix
+    /** index of the row within the matrix */
     private final int index;
 
     /**

@@ -3,15 +3,15 @@ import Exceptions.ApplicationProblemException;
 import java.util.Comparator;
 import java.util.Iterator;
 
-// Class representing a matrix used in the Simplex method for solving linear optimization problems
+/** Class representing a matrix used in the Simplex method for solving linear optimization problems */
 public class SimplexMatrix {
-    // Matrix containing constraints, slack variables, and right-hand side
+    /** Matrix containing constraints, slack variables, and right-hand side */
     Matrix methodMatrix;
-    // Column vector for the right-hand side of constraints
+    /** Column vector for the right-hand side of constraints */
     Vector rightHandSide;
-    // Row vector for the objective function of the optimization problem
+    /** Row vector for the objective function of the optimization problem */
     Vector objectiveFunction;
-    // Optimization mode for a problem
+    /** Optimization mode for a problem */
     OptimizationMode mode;
 
     Comparator<Double> cmp;

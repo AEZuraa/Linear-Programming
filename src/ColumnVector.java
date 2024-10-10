@@ -2,14 +2,13 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-// Represents a column vector, used for storing and manipulating column data
+/** Represents a column vector, used for storing and manipulating column data */
 public class ColumnVector implements Vector {
-    // underlying matrix to hold vector data
+    /** underlying matrix to hold vector data */
     private final Matrix matrix;
-    // index of the column within the matrix
+    /** index of the column within the matrix */
     private final int index;
 
-    // Method to scan input from user and create a ColumnVector
     /**
      * Scans input to create a vector from multiple rows of data.
      * Caret must point to start of the new line.

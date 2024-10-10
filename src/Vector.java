@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-// Interface for vectors, with various utility methods for vector operations
+/** Interface for vectors, with various utility methods for vector operations */
 public interface Vector extends Iterable<Double> {
     /**
      * Get the value at a specific index

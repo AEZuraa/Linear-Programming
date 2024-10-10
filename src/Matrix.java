@@ -2,15 +2,15 @@ import Exceptions.DimensionsException;
 
 import java.util.*;
 
-// Represents a matrix, providing methods to manipulate and perform operations on matrices
+/** Represents a matrix, providing methods to manipulate and perform operations on matrices */
 public class Matrix {
-    // whether the matrix is transposed
+    /** whether the matrix is transposed */
     protected boolean isTransposed;
-    // number of rows
+    /** number of rows */
     protected int rows;
-    // number of columns
+    /** number of columns */
     protected int columns;
-    // flat array representation of the matrix
+    /** flat array representation of the matrix */
     protected double[] lineRepresentation;
 
     /**
@@ -129,17 +129,6 @@ public class Matrix {
         }
     }
 
-    // Method to clone a matrix, clone changes will not affect original matrix
-    public Matrix clone() {
-        Matrix clone = new Matrix(getRows(), getColumns());
-        for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < getColumns(); j++) {
-                clone.set(i, j, get(i, j));
-            }
-        }
-        return clone;
-    }
-
     // Get a row from the matrix as a RowVector object
     public RowVector get(int index) {
         return new RowVector(this, index);
@@ -185,23 +174,6 @@ public class Matrix {
         return isTransposed ? rows : columns;
     }
 
-    // Add two matrices element-wise
-    public Matrix add(Matrix another) throws DimensionsException {
-        if (getRows() != another.getRows() || getColumns() != another.getColumns()) {
-            throw new DimensionsException("Error: the dimensional problem occurred in matrix summation");
-        }
-
-        Matrix result = new Matrix(getRows(), getColumns());
-
-        for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < getColumns(); j++) {
-                result.set(i, j, this.get(i, j) + another.get(i, j));
-            }
-        }
-
-        return result;
-    }
-
     // Immutably multiply the matrix by a scalar factor
     public Matrix multiply(int factor) throws DimensionsException {
         Matrix result = new Matrix(getRows(), getColumns());
@@ -216,11 +188,6 @@ public class Matrix {
         }
 
         return result;
-    }
-
-    // Immutably subtract another matrix from this matrix
-    public Matrix subtract(Matrix another) throws DimensionsException {
-        return add(another.multiply(-1));
     }
 
     // Immutably multiply this matrix by another matrix
@@ -265,17 +232,6 @@ public class Matrix {
         }
     }
 
-    // Adds an empty row to the matrix by increasing the number of rows and resizing the matrix entry
-    private void addRow() {
-        rows++;
-        int newSize = rows * columns;
-        double[] newLineRepresentation = new double[newSize];
-        for (int i = 0; i < lineRepresentation.length; i++) {
-            newLineRepresentation[i] = lineRepresentation[i];
-        }
-        lineRepresentation = newLineRepresentation;
-    }
-
     // Absorbs the contents of a vector (as a row or column) into the matrix at the specified start position
     private void absorb(Vector reference, int startRow, int startCol, boolean isAsRow) throws DimensionsException {
         int n = reference.size();
@@ -293,5 +249,16 @@ public class Matrix {
                     + reference.size() + " into the ("
                     + startRow + ", " + startCol + ") position");
         }
+    }
+
+    @Override
+    public Matrix clone() {
+        Matrix clone = new Matrix(getRows(), getColumns());
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
+                clone.set(i, j, get(i, j));
+            }
+        }
+        return clone;
     }
 }

@@ -1,10 +1,10 @@
-// Class representing a slice (subsection) of a vector
+/** Class representing a slice (subsection) of a vector */
 public class VectorSlice implements Vector {
-    // Reference to the original vector
+    /** Reference to the original vector */
     Vector vector;
-    // Start index of the slice
+    /** Start index of the slice */
     int start;
-    // End index of the slice
+    /** End index of the slice */
     int stop;
 
     /**

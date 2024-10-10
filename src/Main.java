@@ -13,8 +13,7 @@ public class Main {
                 System.out.println("Enter \"min\" for minimization either \"max\" for maximization");
                 mode = OptimizationMode.valueOf(scanner.nextLine().trim().toUpperCase());
                 break;
-            } catch (IllegalArgumentException ignored) {
-            }
+            } catch (IllegalArgumentException ignored) {}
         }
         System.out.println("Enter objective function coefficients (vector):");
         Vector objectiveFunction = RowVector.scan(scanner);
