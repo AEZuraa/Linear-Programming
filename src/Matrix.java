@@ -217,6 +217,17 @@ public class Matrix {
         return clone;
     }
 
+    @Override
+    public Matrix clone() {
+        Matrix clone = new Matrix(getRows(), getColumns());
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getColumns(); j++) {
+                clone.set(i, j, get(i, j));
+            }
+        }
+        return clone;
+    }
+
     // Copies the contents of the reference matrix into the current matrix starting at the specified row and column
     private void absorb(Matrix reference, int startRow, int startCol) throws DimensionsException {
         try {
@@ -249,16 +260,5 @@ public class Matrix {
                     + reference.size() + " into the ("
                     + startRow + ", " + startCol + ") position");
         }
-    }
-
-    @Override
-    public Matrix clone() {
-        Matrix clone = new Matrix(getRows(), getColumns());
-        for (int i = 0; i < getRows(); i++) {
-            for (int j = 0; j < getColumns(); j++) {
-                clone.set(i, j, get(i, j));
-            }
-        }
-        return clone;
     }
 }

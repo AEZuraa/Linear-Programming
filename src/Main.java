@@ -1,4 +1,5 @@
 import Exceptions.ApplicationProblemException;
+import Exceptions.DimensionsException;
 
 import java.util.Scanner;
 
@@ -13,12 +14,19 @@ public class Main {
                 System.out.println("Enter \"min\" for minimization either \"max\" for maximization");
                 mode = OptimizationMode.valueOf(scanner.nextLine().trim().toUpperCase());
                 break;
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         System.out.println("Enter objective function coefficients (vector):");
         Vector objectiveFunction = RowVector.scan(scanner);
         System.out.println("Enter constrains functions coefficients (matrix):");
-        Matrix constrains = Matrix.scan(scanner);
+        Matrix constrains;
+        try {
+            constrains = Matrix.scan(scanner);
+        } catch (DimensionsException ignored){
+            throw new RuntimeException("Improper input, constrains is not a proper matrix");
+            // It is assumed, that input is a correct matrix? so than exception is impossible
+        }
         System.out.println("Enter right hand sides for constrains (vector):");
         Vector rightHandSide = RowVector.scan(scanner);
         try {
