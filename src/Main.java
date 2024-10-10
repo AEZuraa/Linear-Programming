@@ -1,5 +1,6 @@
 import Exceptions.ApplicationProblemException;
 
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
@@ -9,17 +10,20 @@ public class Main {
         while (true) {
             try {
                 System.out.println("Enter 0 for minimization or any another number for maximization");
-                isMaximization = (0 != Integer.parseInt(scanner.next()));
+                isMaximization = (0 != Integer.parseInt(scanner.nextLine()));
                 break;
             } catch (NumberFormatException ignored) {}
         }
-        Vector objectiveFunction = ColumnVector.scan(scanner);
+        System.out.println("Enter objective function coefficients (vector):");
+        Vector objectiveFunction = RowVector.scan(scanner);
+        System.out.println("Enter constrains functions coefficients (matrix):");
         Matrix constrains = Matrix.scan(scanner);
+        System.out.println("Enter right hand sides for constrains (vector):");
         Vector rightHandSide = RowVector.scan(scanner);
         try {
             SimplexMatrix solution;
-            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, isMaximization);
-            while (!solution.iteration(0.001)) {
+            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, 0.0001, isMaximization);
+            while (!solution.iteration()) {
                 continue;
             }
             System.out.println("Values of variables in optimal solution:\n" + solution.getObjectiveFunction());

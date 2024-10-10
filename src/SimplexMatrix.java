@@ -7,7 +7,9 @@ public class SimplexMatrix {
     ColumnVector rightHandSide;
     RowVector objectiveFunction;
 
-    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, boolean isMax) throws ApplicationProblemException {
+    Comparator<Double> cmp;
+
+    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy, boolean isMax) throws ApplicationProblemException {
         if (!rightHandSide.all(item -> item >= 0)) {
             throw new ApplicationProblemException("Right hand side must be non negative for simplex method application");
         }
@@ -17,15 +19,23 @@ public class SimplexMatrix {
                 .combineTop(isMax ? objectiveFunction.multiply(-1) : objectiveFunction);
         this.rightHandSide = new ColumnVector(methodMatrix, methodMatrix.columns - 1);
         this.objectiveFunction = methodMatrix.get(0);
+        cmp = new DoublePreciseComparator(accuracy);
+    }
+
+    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, double accuracy) throws ApplicationProblemException {
+        this(objectiveFunction, constrains, rightHandSide, accuracy, true);
     }
 
     public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide) throws ApplicationProblemException {
-        this(objectiveFunction, constrains, rightHandSide, true);
+        this(objectiveFunction, constrains, rightHandSide, 0, true);
     }
 
-    public boolean iteration(double accuracy) throws ApplicationProblemException {
+    public SimplexMatrix(Vector objectiveFunction, Matrix constrains, Vector rightHandSide, boolean isMax) throws ApplicationProblemException {
+        this(objectiveFunction, constrains, rightHandSide, 0, isMax);
+    }
+
+    public boolean iteration() throws ApplicationProblemException {
         double[] ratios = new double[rightHandSide.size()];
-        Comparator<Double> cmp = new DoublePreciseComparator(accuracy);
         int enters = objectiveFunction.theMostIn(
                 (a, b) -> cmp.compare(a, b) < 0,
                 0,
