@@ -26,7 +26,7 @@ public class InteriorTopologicalPoint {
             throw new DimensionsException("Right hand side vector must have size of matrix columns amount");
         }
         temp.mutateBy(rightHandSide, (a, b) -> a - b);
-        if (!temp.all((a) -> cmp.compare(a, 0d) >= 0)) {
+        if (!temp.all((a) -> cmp.compare(a, 0d) <= 0)) {
             throw new ApplicationProblemException("Interior point must be inside the topological region");
         }
         this.objectiveFunction = objectiveFunction;
