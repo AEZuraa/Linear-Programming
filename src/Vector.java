@@ -5,7 +5,9 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-/** Interface for vectors, with various utility methods for vector operations */
+/**
+ * Interface for vectors, with various utility methods for vector operations
+ */
 public interface Vector extends Iterable<Double> {
     /**
      * Get the value at a specific index
@@ -42,6 +44,7 @@ public interface Vector extends Iterable<Double> {
 
     /**
      * Perform dot product multiplication with another vector
+     *
      * @param another second operand for the dot product
      * @return result of the dot product operation (x_1*y_1 + x_2*y_2 + ... + x_n*y_n)
      * @throws DimensionsException If vectors have not the same direction
@@ -59,6 +62,7 @@ public interface Vector extends Iterable<Double> {
 
     /**
      * TODO: this (doc)
+     *
      * @param matrix
      * @return
      * @throws DimensionsException
@@ -74,6 +78,7 @@ public interface Vector extends Iterable<Double> {
 
     /**
      * Mutably scale the vector by a factor
+     *
      * @param factor number to be multiplied on each vector element
      */
     default void scaleBy(double factor) {
@@ -86,8 +91,9 @@ public interface Vector extends Iterable<Double> {
     /**
      * Mutably apply an operation to each element of the vector based on another vector.
      * x_i = shader(x_i, y_i)
+     *
      * @param operand y vector
-     * @param shader function to be applied
+     * @param shader  function to be applied
      */
     default void mutateBy(Vector operand, BiFunction<Double, Double, Double> shader) {
         int n = size();
@@ -97,7 +103,16 @@ public interface Vector extends Iterable<Double> {
     }
 
     /**
+     * TODO: doc
+     * @param operand
+     * @param shader
+     * @return
+     */
+    Vector getMutated(Vector operand, BiFunction<Double, Double, Double> shader);
+
+    /**
      * Check if all elements of the vector satisfy a condition
+     *
      * @param condition condition
      * @return true if all elements satisfy the condition, false otherwise
      */
@@ -113,6 +128,7 @@ public interface Vector extends Iterable<Double> {
 
     /**
      * Find the index of the element that stays at the top of linear order, formed by the given criteria
+     *
      * @param criteria base predicate of a linear order
      * @return last element in linear order from vector
      */
@@ -125,6 +141,17 @@ public interface Vector extends Iterable<Double> {
             }
         }
         return res;
+    }
+
+    default double cardinality() {
+        double res = 0;
+        int n = size();
+        double item;
+        for (int i = 0; i < n; i++) {
+            item = get(i);
+            res += item * item;
+        }
+        return Math.sqrt(res);
     }
 
     @Override

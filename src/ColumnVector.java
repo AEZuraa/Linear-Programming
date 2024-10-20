@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.function.BiFunction;
 
 /** Represents a column vector, used for storing and manipulating column data */
 public class ColumnVector implements Vector {
@@ -74,6 +75,13 @@ public class ColumnVector implements Vector {
     }
 
     @Override
+    public Vector getMutated(Vector operand, BiFunction<Double, Double, Double> shader) {
+        Vector res = clone();
+        res.mutateBy(operand, shader);
+        return res;
+    }
+
+    @Override
     public int size() {
         return matrix.isTransposed ? matrix.columns : matrix.rows;
     }
@@ -87,5 +95,14 @@ public class ColumnVector implements Vector {
         }
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
+    }
+
+    @Override
+    public ColumnVector clone() {
+        ColumnVector clone = new ColumnVector(size());
+        for (int i = 0; i < size(); i++) {
+            clone.set(i, get(i));
+        }
+        return clone;
     }
 }
