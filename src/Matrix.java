@@ -203,6 +203,25 @@ public class Matrix {
         return result;
     }
 
+    /**
+     * TODO: this doc
+     * @param one
+     * @return
+     * @throws DimensionsException
+     */
+    public Vector multiply(Vector one) throws DimensionsException {
+        int n = getRows();
+        Vector result = new ColumnVector(n);
+        for (int i = 0; i < n; i++) {
+            result.set(i, get(i).multiply(one));
+        }
+        return result;
+    }
+
+    public Matrix getPseudoInverse(){
+
+    }
+
     // Returns the transposed representation of the matrix, with same entry
     // (changes over transposed one WILL affect original one)
     public Matrix transposed() {

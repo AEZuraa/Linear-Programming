@@ -58,6 +58,21 @@ public interface Vector extends Iterable<Double> {
     }
 
     /**
+     * TODO: this (doc)
+     * @param matrix
+     * @return
+     * @throws DimensionsException
+     */
+    default Vector multiply(Matrix matrix) throws DimensionsException {
+        int n = size();
+        Vector result = new ColumnVector(n);
+        for (int i = 0; i < n; i++) {
+            result.set(i, multiply(new ColumnVector(matrix, i)));
+        }
+        return result;
+    }
+
+    /**
      * Mutably scale the vector by a factor
      * @param factor number to be multiplied on each vector element
      */
