@@ -28,11 +28,6 @@ public class Matrix {
 
     private DoublePreciseComparator CMP;
 
-    /**
-     * Comparator for double numbers, which is used to avoid inaccurate computation while running.
-     * Factored out to static field in optimization purposes.
-     * TODO: make dynamic somehow, without
-     */
     private static final DoublePreciseComparator DEFAULT_CMP = new DoublePreciseComparator(0.001);
 
     /**
