@@ -398,8 +398,6 @@ public class Matrix {
         int _rows = getRows();
         int _columns = getColumns();
 
-        // TODO: refactor this piece of smelled and smelted code
-
         // eliminate forward
         boolean isNegated = false;
         for (int i = 0; i < _rows; ++i) {
