@@ -1,48 +1,103 @@
 import Exceptions.ApplicationProblemException;
 import Exceptions.DimensionsException;
+import Exceptions.SingularityException;
 
 import java.util.Scanner;
 
-// Main entry point of the program
 public class Main {
     public static void main(String[] args) {
-        // Reading the objective function, constraints matrix, and right-hand side values from input
         Scanner scanner = new Scanner(System.in);
         OptimizationMode mode;
+
+        // Read optimization mode (min or max)
         while (true) {
             try {
-                System.out.println("Enter \"min\" for minimization either \"max\" for maximization");
+                System.out.println("Enter \"min\" for minimization or \"max\" for maximization");
                 mode = OptimizationMode.valueOf(scanner.nextLine().trim().toUpperCase());
                 break;
             } catch (IllegalArgumentException ignored) {
             }
         }
+
+        // Read objective function coefficients
         System.out.println("Enter objective function coefficients (vector):");
         Vector objectiveFunction = RowVector.scan(scanner);
-        System.out.println("Enter constrains functions coefficients (matrix):");
-        Matrix constrains;
+
+        // Read constraints matrix
+        System.out.println("Enter constraint functions coefficients (matrix):");
+        Matrix constraints;
         try {
-            constrains = Matrix.scan(scanner);
-        } catch (DimensionsException ignored){
-            throw new RuntimeException("Improper input, constrains is not a proper matrix");
-            // It is assumed, that input is a correct matrix? so than exception is impossible
+            constraints = Matrix.scan(scanner);
+        } catch (DimensionsException ignored) {
+            throw new RuntimeException("Improper input, constraints is not a proper matrix");
         }
-        System.out.println("Enter right hand sides for constrains (vector):");
+
+        // Read right-hand side values
+        System.out.println("Enter right-hand sides for constraints (vector):");
         Vector rightHandSide = RowVector.scan(scanner);
+
+        // Read initial starting point
+        System.out.println("Enter initial point (vector):");
+        Vector initialPoint = RowVector.scan(scanner);
+
+        // Read accuracy
+        System.out.println("Enter approximation accuracy (ε):");
+        double accuracy = scanner.nextDouble();
+
+        // Read alpha value for the Interior Point method
+        double alpha1 = 0.5;
+        double alpha2 = 0.9;
+
+        // Solve using Simplex method
         try {
-            // Create SimplexMatrix and perform iterations to find the optimal solution
-            SimplexMatrix solution;
-            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, 0.0001, mode);
-            solution.solve();
+            // Simplex method solution
+            SimplexMatrix simplexSolution = new SimplexMatrix(objectiveFunction, constraints, rightHandSide, accuracy, mode);
+            simplexSolution.solve();
             System.out.println(
                     (mode.equals(OptimizationMode.MAX) ? "Maximum" : "Minimum")
-                            + " value of the objective function:\n"
-                            + solution.getObjectiveFunctionValue()
+                            + " value of the objective function (Simplex):\n"
+                            + simplexSolution.getObjectiveFunctionValue()
                             + "\nAt the point:\n"
-                            + new VectorSlice(solution.getObjectiveFunction(), 0, objectiveFunction.size())
+                            + new VectorSlice(simplexSolution.getObjectiveFunction(), 0, objectiveFunction.size())
             );
         } catch (ApplicationProblemException e) {
             System.out.println("The method is not applicable!");
+        }
+
+        // Solve using Interior Point method for alpha = 0.5
+        try {
+            InteriorTopologicalPoint interiorPointSolver1 = new InteriorTopologicalPoint(objectiveFunction, constraints, rightHandSide, initialPoint, alpha1, accuracy);
+            Vector solution1 = interiorPointSolver1.solve();
+            double objectiveValue1 = objectiveFunction.multiply(solution1);
+            System.out.println(
+                    (mode.equals(OptimizationMode.MAX) ? "Maximum" : "Minimum")
+                            + " value of the objective function (Interior Point, α=0.5):\n"
+                            + objectiveValue1
+                            + "\nAt the point:\n"
+                            + solution1
+            );
+        } catch (ApplicationProblemException e) {
+            System.out.println("The method is not applicable!");
+        } catch (DimensionsException | SingularityException e) {
+            System.out.println("An error occurred during Interior Point calculation: " + e.getMessage());
+        }
+
+        // Solve using Interior Point method for alpha = 0.9
+        try {
+            InteriorTopologicalPoint interiorPointSolver2 = new InteriorTopologicalPoint(objectiveFunction, constraints, rightHandSide, initialPoint, alpha2, accuracy);
+            Vector solution2 = interiorPointSolver2.solve();
+            double objectiveValue2 = objectiveFunction.multiply(solution2);
+            System.out.println(
+                    (mode.equals(OptimizationMode.MAX) ? "Maximum" : "Minimum")
+                            + " value of the objective function (Interior Point, α=0.9):\n"
+                            + objectiveValue2
+                            + "\nAt the point:\n"
+                            + solution2
+            );
+        } catch (ApplicationProblemException e) {
+            System.out.println("The method is not applicable!");
+        } catch (DimensionsException | SingularityException e) {
+            System.out.println("An error occurred during Interior Point calculation: " + e.getMessage());
         }
     }
 }
