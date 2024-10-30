@@ -1,3 +1,5 @@
+import java.util.function.BiFunction;
+
 /** Class representing a slice (subsection) of a vector */
 public class VectorSlice implements Vector {
     /** Reference to the original vector */
@@ -53,6 +55,16 @@ public class VectorSlice implements Vector {
             result.set(i, get(i) * factor);
         }
         return result;
+    }
+
+    @Override
+    public Vector getMutated(Vector operand, BiFunction<Double, Double, Double> shader) {
+        RowVector res = new RowVector(size());
+        for (int i = 0; i < size(); i++) {
+            res.set(i, get(i));
+        }
+        res.mutateBy(operand, shader);
+        return res;
     }
 
     @Override
