@@ -42,7 +42,7 @@ public class Main {
 
         // Read accuracy
         System.out.println("Enter approximation accuracy (ε):");
-        double accuracy = scanner.nextDouble();
+        double accuracy = Double.parseDouble(scanner.nextLine());
 
         // Read alpha value for the Interior Point method
         double[] alphas = {0.5, 0.9};
