@@ -31,6 +31,7 @@ public class InteriorTopologicalPoint {
         this.objectiveFunction = objectiveFunction;
         this.constrains = constraints;
         this.alpha = alpha;
+        this.currentPoint = initialPoint;
     }
 
     public Vector solve() throws DimensionsException, SingularityException {
