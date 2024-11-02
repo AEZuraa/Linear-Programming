@@ -17,5 +17,5 @@ Interior-Point Result: The method is not applicable!
 Simplex Result: 𝒁 = 72, 𝒙𝟏 = 0, 𝒙𝟐 = 9, 𝒙3 = 2.9999999999999996, 𝒙4 = 0
 
 Sample 5:
-Interior-Point Result: 1. An error occurred during Interior Point calculation: Matrix have no pseudo inverse
+Interior-Point Result: 1. An error occurred during Interior Point calculation: Matrix have no pseudo inverse.
 Simplex Result: 𝒁 = 213.333, 𝒙𝟏 = 0, 𝒙𝟐 = 13.333 , 𝒙𝟑 = 53.333, 𝐬𝟏 = 𝟎, 𝒔𝟐 = 0
