@@ -27,13 +27,14 @@ public class InteriorTopologicalPoint {
             throw new DimensionsException("Right hand side vector must have size of matrix columns amount");
         }
         initialLHS.mutateBy(rightHandSide, (a, b) -> a - b);
+        initialLHS.multiply(-1);
         if (!initialLHS.all((a) -> cmp.compare(a, 0d) <= 0)) {
             throw new ApplicationProblemException("Interior point must be inside the topological region");
         }
         this.objectiveFunction = objectiveFunction.multiply(mode.factor);
-        this.constrains = constraints;
+        this.constrains = constraints.combineRight(Matrix.Identity(constraints.rows));
         this.alpha = alpha;
-        this.currentPoint = initialPoint;
+        this.currentPoint = initialPoint.extendWith(initialLHS);
         this.mode = mode;
     }
 

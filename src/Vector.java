@@ -76,6 +76,30 @@ public interface Vector extends Iterable<Double> {
         return result;
     }
 
+    default Vector extend(int n) {
+        Vector clone = new RowVector(this.size()+n);
+        for (int i = 0; i < this.size()+n; i++) {
+            if (i < this.size()) {
+                clone.set(i, this.get(i));
+            } else {
+                clone.set(i, 0);
+            }
+        }
+        return clone;
+    }
+
+    default Vector extendWith(Vector elems) {
+        Vector clone = new RowVector(this.size()+elems.size());
+        for (int i = 0; i < this.size()+elems.size(); i++) {
+            if (i < this.size()) {
+                clone.set(i, this.get(i));
+            } else {
+                clone.set(i, elems.get(i-this.size()));
+            }
+        }
+        return clone;
+    }
+
     /**
      * Mutably scale the vector by a factor
      *
