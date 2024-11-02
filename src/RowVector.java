@@ -85,7 +85,7 @@ public class RowVector implements Vector {
 
     @Override
     public int size() {
-        return matrix.isTransposed ? matrix.rows : matrix.columns;
+        return matrix.getColumns();
     }
 
     @Override

@@ -66,7 +66,7 @@ public class Main {
         // Solve using Interior Point method for alpha = 0.5 & alpha = 0.9
         for (double alpha : alphas) {
             try {
-                InteriorTopologicalPoint interiorPointSolver1 = new InteriorTopologicalPoint(objectiveFunction, constraints, rightHandSide, initialPoint, alpha, accuracy);
+                InteriorTopologicalPoint interiorPointSolver1 = new InteriorTopologicalPoint(objectiveFunction, constraints, rightHandSide, initialPoint, alpha, accuracy, mode);
                 Vector solution1 = interiorPointSolver1.solve();
                 double objectiveValue1 = objectiveFunction.multiply(solution1);
                 System.out.println(
@@ -78,6 +78,7 @@ public class Main {
                 );
             } catch (ApplicationProblemException e) {
                 System.out.println("The method is not applicable!");
+                return;
             } catch (DimensionsException | SingularityException e) {
                 System.out.println("An error occurred during Interior Point calculation: " + e.getMessage());
             }

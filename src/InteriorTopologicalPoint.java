@@ -8,6 +8,7 @@ public class InteriorTopologicalPoint {
     Vector currentPoint;
     double alpha;
     DoublePreciseComparator cmp;
+    OptimizationMode mode;
 
     public InteriorTopologicalPoint(
             Vector objectiveFunction,
@@ -15,7 +16,8 @@ public class InteriorTopologicalPoint {
             Vector rightHandSide,
             Vector initialPoint,
             double alpha,
-            double accuracy
+            double accuracy,
+            OptimizationMode mode
     ) throws DimensionsException, ApplicationProblemException {
         cmp = new DoublePreciseComparator(accuracy);
         Vector initialLHS;
@@ -28,16 +30,17 @@ public class InteriorTopologicalPoint {
         if (!initialLHS.all((a) -> cmp.compare(a, 0d) <= 0)) {
             throw new ApplicationProblemException("Interior point must be inside the topological region");
         }
-        this.objectiveFunction = objectiveFunction;
+        this.objectiveFunction = objectiveFunction.multiply(mode.factor);
         this.constrains = constraints;
         this.alpha = alpha;
         this.currentPoint = initialPoint;
+        this.mode = mode;
     }
 
     public Vector solve() throws DimensionsException, SingularityException {
         while (iteration()) {
         }
-        return currentPoint;
+        return currentPoint.multiply(mode.factor*(-1));
     }
 
     // TODO: doc
@@ -55,7 +58,8 @@ public class InteriorTopologicalPoint {
         } catch (DimensionsException e) {
             throw new DimensionsException("The amount of columns in diagonal solution matrix must be equal to the amount of coefficients in objective function vector");
         }
-        Matrix P = Matrix.Identity(ATilda.getRows()).subtract(ATilda.getPseudoInverse(cmp.accuracy));
+        Matrix hui = ATilda.getPseudoInverse(cmp.accuracy);
+        Matrix P = Matrix.Identity(ATilda.getColumns()).subtract(hui);
         Vector cp = P.multiply(cTilda);
         double factor = alpha / Math.abs(cp.get(cp.theMost((a, b) -> a < b)));
         Vector xTilda = RowVector.one(currentPoint.size(), 1);

@@ -40,7 +40,7 @@ public class SimplexMatrix {
         methodMatrix = constrains
                 .combineRight(Matrix.Identity(constrains.getRows()))
                 .combineRight(rightHandSide)
-                .combineTop(mode.equals(OptimizationMode.MAX) ? objectiveFunction.multiply(-1) : objectiveFunction);
+                .combineTop(objectiveFunction.multiply(mode.factor));
         this.rightHandSide = new ColumnVector(methodMatrix, methodMatrix.getColumns() - 1);
         this.objectiveFunction = new VectorSlice(methodMatrix.get(0), 0, methodMatrix.getColumns());
         cmp = new DoublePreciseComparator(accuracy);

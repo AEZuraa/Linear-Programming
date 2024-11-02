@@ -255,7 +255,7 @@ public class Matrix {
         try {
             for (int i = 0; i < getRows(); i++) {
                 for (int j = 0; j < another.getColumns(); j++) {
-                    result.set(i, j, get(i).multiply(another.get(j)));
+                    result.set(i, j, get(i).multiply(new ColumnVector(another, j)));
                 }
             }
         } catch (IndexOutOfBoundsException e) {
@@ -293,11 +293,10 @@ public class Matrix {
                 || startRow > endRow
                 || startColumn > endColumn
         ) {
-            throw new IndexOutOfBoundsException("Improper submatrix boundasaries. Slice ("
-                    + startRow + ", " + startColumn + "):(" + endRow + ", " + endColumn
-                    + ") does not belong to matrix (" + getRows() + " x " + getColumns() + ")");
+            throw new IndexOutOfBoundsException("Improper submatrix boundaries. Slice ("
+                    + startRow + ", " + startColumn + "):(" + endRow + ", " + endColumn + ") does not belong to matrix (" + getRows() + " x " + getColumns() + ")");
         }
-        Matrix result = new Matrix(endRow - startRow, endColumn - startColumn);
+        Matrix result = new Matrix(endRow - startRow + 1, endColumn - startColumn + 1);
         for (int i = 0; i < result.rows; i++) {
             for (int j = 0; j < result.columns; j++) {
                 result.set(i, j, get(startRow + i, startColumn + j));
@@ -320,7 +319,7 @@ public class Matrix {
         if (accuracy != DEFAULT_CMP.accuracy)
             augmented.CMP = new DoublePreciseComparator(accuracy);
         augmented.toRREF();
-        return augmented.getSubmatrix(0, rows, rows, rows * 2);
+        return augmented.getSubmatrix(0, rows, rows - 1, rows * 2 - 1);
     }
 
     public Matrix getInverse() throws ImproperConversionException, SingularityException {
