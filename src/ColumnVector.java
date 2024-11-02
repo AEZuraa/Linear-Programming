@@ -53,7 +53,7 @@ public class ColumnVector implements Vector {
         matrix = source;
         index = column;
     }
-
+//
     @Override
     public double get(int index) throws IndexOutOfBoundsException {
         return matrix.get(index, this.index);

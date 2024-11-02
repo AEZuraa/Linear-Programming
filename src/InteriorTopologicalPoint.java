@@ -42,7 +42,7 @@ public class InteriorTopologicalPoint {
         }
         return currentPoint.multiply(mode.factor*(-1));
     }
-
+//
     // TODO: doc
     protected boolean iteration() throws DimensionsException, SingularityException {
         Matrix D = Matrix.diagonal(currentPoint);

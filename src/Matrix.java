@@ -264,7 +264,7 @@ public class Matrix {
 
         return result;
     }
-
+//
     /**
      * TODO: this doc
      *

@@ -41,7 +41,7 @@ public interface Vector extends Iterable<Double> {
      * @return vector multiplied by factor
      */
     Vector multiply(double factor);
-
+//
     /**
      * Perform dot product multiplication with another vector
      *
