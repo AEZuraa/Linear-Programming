@@ -31,7 +31,7 @@ public class Main {
         } catch (DimensionsException ignored) {
             throw new RuntimeException("Improper input, constraints is not a proper matrix");
         }
-
+// bb
         // Read right-hand side values
         System.out.println("Enter right-hand sides for constraints (vector):");
         Vector rightHandSide = RowVector.scan(scanner);
