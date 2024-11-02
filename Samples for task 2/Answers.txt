@@ -8,8 +8,8 @@ Interior-Point Result: The method is not applicable!
 Simplex Result: 𝒁 = 90.0, 𝒙𝟏 = 15, 𝒙𝟐 = 𝟎, 𝒙𝟑 = 0, 𝒙4 = 0
 
 Sample 3:
-Interior-Point Result: 1. α=0.5: 𝒁 = ; 𝒙𝟏 = , 𝒙𝟐 = , 𝒙𝟑 =
-                       2. α=0.9: 𝒁 = ; 𝒙𝟏 = , 𝒙𝟐 = , 𝒙𝟑 =
+Interior-Point Result: 1. α=0.5: 𝒁 = 87.99645327979675; 𝒙𝟏 = 1.3566671868088178E-5, 𝒙𝟐 = 21.999103144945288
+                       2. α=0.9: 𝒁 = 87.99965002541394; 𝒙𝟏 = 2.989963858717091E-8, 𝒙𝟐 = 21.999912483928757
 Simplex Result: 𝒁 = 96, 𝒙𝟏 = 8, 𝒙𝟐 = 18, 𝐬𝟏 = 𝟎, 𝒔𝟐 = 0
 
 Sample 4:
@@ -17,6 +17,5 @@ Interior-Point Result: The method is not applicable!
 Simplex Result: 𝒁 = 72, 𝒙𝟏 = 0, 𝒙𝟐 = 9, 𝒙3 = 2.9999999999999996, 𝒙4 = 0
 
 Sample 5:
-Interior-Point Result: 1. α=0.5: 𝒁 = ; 𝒙𝟏 = , 𝒙𝟐 = , 𝒙𝟑 =
-                       2. α=0.9: 𝒁 = ; 𝒙𝟏 = , 𝒙𝟐 = , 𝒙𝟑 =
+Interior-Point Result: 1. An error occurred during Interior Point calculation: Matrix have no pseudo inverse
 Simplex Result: 𝒁 = 213.333, 𝒙𝟏 = 0, 𝒙𝟐 = 13.333 , 𝒙𝟑 = 53.333, 𝐬𝟏 = 𝟎, 𝒔𝟐 = 0
