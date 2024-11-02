@@ -68,7 +68,7 @@ public class Main {
             try {
                 InteriorTopologicalPoint interiorPointSolver1 = new InteriorTopologicalPoint(objectiveFunction, constraints, rightHandSide, initialPoint, alpha, accuracy, mode);
                 Vector solution1 = interiorPointSolver1.solve();
-                double objectiveValue1 = objectiveFunction.extend(constraints.rows).multiply(solution1);
+                double objectiveValue1 = objectiveFunction.multiply(solution1);
                 System.out.println(
                         (mode.equals(OptimizationMode.MAX) ? "Maximum" : "Minimum")
                                 + " value of the objective function (Interior Point, α=" + alpha + "):\n"

@@ -30,17 +30,17 @@ public class InteriorTopologicalPoint {
         if (!initialLHS.all((a) -> cmp.compare(a, 0d) >= 0)) {
             throw new ApplicationProblemException("Interior point must be inside the topological region");
         }
-        this.objectiveFunction = objectiveFunction.extend(constraints.getRows()).multiply(mode.factor).multiply(-1);
+        this.objectiveFunction = objectiveFunction.multiply(mode.factor*-1);
         this.constrains = constraints.combineRight(Matrix.Identity(constraints.rows));
         this.alpha = alpha;
-        this.currentPoint = initialPoint.extendWith(initialLHS);
+        this.currentPoint = initialPoint.extendWith(initialLHS).multiply(mode.factor*-1);
         this.mode = mode;
     }
 
     public Vector solve() throws DimensionsException, SingularityException {
         while (!iteration()) {
         }
-        return currentPoint.multiply(mode.factor*(-1));
+        return new VectorSlice(currentPoint.multiply(mode.factor*(-1)), 0, currentPoint.size() - constrains.getRows());
     }
 
     // TODO: doc
@@ -58,16 +58,14 @@ public class InteriorTopologicalPoint {
         } catch (DimensionsException e) {
             throw new DimensionsException("The amount of columns in diagonal solution matrix must be equal to the amount of coefficients in objective function vector");
         }
-        Matrix P = Matrix.Identity(ATilda.getColumns()).subtract(ATilda.getPseudoInverse(cmp.accuracy));
+        Matrix hui = ATilda.getPseudoInverse(cmp.accuracy);
+        Matrix P = Matrix.Identity(ATilda.getColumns()).subtract(hui);
         Vector cp = P.multiply(cTilda);
-//        if (cp.all((a)->cmp.compare(a, 0d) >= 0)){
-//            return true;
-//        }
         double factor = alpha / Math.abs(cp.get(cp.theMost((a, b) -> a < b)));
         Vector xTilda = RowVector.one(currentPoint.size(), 1);
         xTilda.mutateBy(cp, (one, value) -> one + factor * value);
         Vector xStar = D.multiply(xTilda);
-        if (cmp.compare(xStar.getMutated(currentPoint, (a, b) -> a - b).cardinality(), 0d) == 0) {
+        if (cmp.compare(xStar.getMutated(currentPoint, (a, b) -> a - b).cardinality(), 0d) <= 0) {
             currentPoint = xStar;
             return true;
         }
