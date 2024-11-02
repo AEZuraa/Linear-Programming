@@ -26,22 +26,21 @@ public class InteriorTopologicalPoint {
         } catch (DimensionsException e) {
             throw new DimensionsException("Right hand side vector must have size of matrix columns amount");
         }
-        initialLHS.mutateBy(rightHandSide, (a, b) -> a - b);
-        initialLHS.multiply(-1);
-        if (!initialLHS.all((a) -> cmp.compare(a, 0d) <= 0)) {
+        initialLHS.mutateBy(rightHandSide, (a, b) -> b - a);
+        if (!initialLHS.all((a) -> cmp.compare(a, 0d) >= 0)) {
             throw new ApplicationProblemException("Interior point must be inside the topological region");
         }
-        this.objectiveFunction = objectiveFunction.multiply(mode.factor);
+        this.objectiveFunction = objectiveFunction.multiply(mode.factor*-1);
         this.constrains = constraints.combineRight(Matrix.Identity(constraints.rows));
         this.alpha = alpha;
-        this.currentPoint = initialPoint.extendWith(initialLHS);
+        this.currentPoint = initialPoint.extendWith(initialLHS).multiply(mode.factor*-1);
         this.mode = mode;
     }
 
     public Vector solve() throws DimensionsException, SingularityException {
-        while (iteration()) {
+        while (!iteration()) {
         }
-        return currentPoint.multiply(mode.factor*(-1));
+        return new VectorSlice(currentPoint.multiply(mode.factor*(-1)), 0, currentPoint.size() - constrains.getRows());
     }
 
     // TODO: doc
