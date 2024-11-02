@@ -5,7 +5,7 @@ import Exceptions.SingularityException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DimensionsException {
         Scanner scanner = new Scanner(System.in);
         OptimizationMode mode;
 
@@ -66,7 +66,7 @@ public class Main {
         // Solve using Interior Point method for alpha = 0.5 & alpha = 0.9
         for (double alpha : alphas) {
             try {
-                InteriorTopologicalPoint interiorPointSolver1 = new InteriorTopologicalPoint(objectiveFunction.extend(constraints.rows), constraints, rightHandSide, initialPoint, alpha, accuracy, mode);
+                InteriorTopologicalPoint interiorPointSolver1 = new InteriorTopologicalPoint(objectiveFunction, constraints, rightHandSide, initialPoint, alpha, accuracy, mode);
                 Vector solution1 = interiorPointSolver1.solve();
                 double objectiveValue1 = objectiveFunction.extend(constraints.rows).multiply(solution1);
                 System.out.println(
@@ -74,7 +74,7 @@ public class Main {
                                 + " value of the objective function (Interior Point, α=" + alpha + "):\n"
                                 + objectiveValue1
                                 + "\nAt the point:\n"
-                                + solution1
+                                + new VectorSlice(solution1.multiply(mode.factor*(-1)), 0, solution1.size() - constraints.getRows())
                 );
             } catch (ApplicationProblemException e) {
                 System.out.println("The method is not applicable!");

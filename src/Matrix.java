@@ -328,7 +328,7 @@ public class Matrix {
 
     public Matrix getPseudoInverse(double accuracy) throws SingularityException {
         try {
-            return transposed().multiply(multiply(transposed()).getInverse(accuracy)).multiply(this);
+            return transposed().multiply(this.multiply(transposed()).getInverse(accuracy)).multiply(this);
         } catch (SingularityException e) {
             throw new SingularityException("Matrix have no pseudo inverse");
         } catch (MatrixException ignored) {
@@ -397,52 +397,51 @@ public class Matrix {
         int _rows = getRows();
         int _columns = getColumns();
 
-        // eliminate forward
-        boolean isNegated = false;
+        // Forward elimination to create an upper triangular form
         for (int i = 0; i < _rows; ++i) {
+            // Pivot selection for numerical stability
             int curPermutation = getPivoting(i);
             if (i != curPermutation) {
                 permute(i, curPermutation);
-                isNegated = !isNegated;
             }
-            if (CMP.compare(Math.abs(get(i, i)), 0d) < 0) {
+
+            // Check if pivot is zero after permutation; if so, matrix is singular
+            if (CMP.compare(Math.abs(get(i, i)), 0d) == 0) {
                 throw new SingularityException("Error: matrix A is singular");
             }
-            for (int j = i + 1; j < _rows; ++j) {
-                if (CMP.compare(Math.abs(get(j, i)), 0d) < 0) {
-                    continue;
-                }
-                eliminate(j, i);
-                isNegated = !isNegated;
-            }
-        }
 
-        double diagonalProduct = 1;
-        for (int i = 0; i < Math.min(columns, rows); i++) {
-            diagonalProduct *= get(i, i);
-        }
-        if (CMP.compare(Math.abs(diagonalProduct), 0d) < 0) {
-            throw new SingularityException("Error: matrix A is singular");
-        }
-        // eliminate backward
-        for (int i = _rows - 1; i >= 0; --i) {
-            for (int j = i - 1; j >= 0; --j) {
-                if (CMP.compare(Math.abs(get(j, i)), 0d) >= 0) {
+            // Eliminate entries below the pivot
+            for (int j = i + 1; j < _rows; ++j) {
+                if (CMP.compare(Math.abs(get(j, i)), 0d) != 0) {
                     eliminate(j, i);
                 }
             }
         }
 
-        // diagonal normalize
+        // Backward elimination to zero out above-diagonal elements
+        for (int i = _rows - 1; i >= 0; --i) {
+            // Ensure diagonal elements are non-zero, otherwise throw exception
+            if (CMP.compare(Math.abs(get(i, i)), 0d) == 0) {
+                throw new SingularityException("Error: matrix A is singular");
+            }
+
+            for (int j = i - 1; j >= 0; --j) {
+                if (CMP.compare(Math.abs(get(j, i)), 0d) != 0) {
+                    eliminate(j, i);
+                }
+            }
+        }
+
+        // Normalize the diagonal to make all pivots 1
         for (int i = 0; i < _rows; ++i) {
             double pivot = get(i, i);
             for (int j = 0; j < _columns; ++j) {
                 set(i, j, get(i, j) / pivot);
             }
-            set(i, i, 1d);
         }
     }
 
+    // Method to get the pivot row by finding the maximum absolute value in the current column
     private int getPivoting(int row) {
         int pivot = row;
         double maxValue = Math.abs(get(row, row));
@@ -455,16 +454,17 @@ public class Matrix {
         return pivot;
     }
 
+    // Method to swap rows for pivoting
     private void permute(int row1, int row2) {
         int col = getColumns();
-        double temp = 0;
         for (int i = 0; i < col; i++) {
-            temp = get(row1, i);
+            double temp = get(row1, i);
             set(row1, i, get(row2, i));
             set(row2, i, temp);
         }
     }
 
+    // Method to eliminate elements below or above a pivot in a specific column
     private void eliminate(int row, int column) {
         double closureFactor = get(row, column) / get(column, column);
         new RowVector(this, row)
@@ -473,4 +473,5 @@ public class Matrix {
                         (cur, piv) -> cur - closureFactor * piv
                 );
     }
+
 }
