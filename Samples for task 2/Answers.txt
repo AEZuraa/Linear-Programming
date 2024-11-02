@@ -1,19 +1,19 @@
 Sample 1 :
-Interior-Point Result: z=34 at (6,4)
-Simplex Result: z=34 at (6,4)
+Interior-Point Result:
+Simplex Result: 𝒁 = −30.75; 𝒙𝟏 = 0, 𝒙𝟐 = 𝟎.75, 𝒙𝟑 = 5.375, 𝐬𝟏 = 𝟎, 𝒔𝟐 = 𝟎, 𝐬𝟑 = 0
 
 Sample 2:
-Interior-Point Result: z=20 at (0,5,1)
-Simplex Result: z=20 at (0,5,1)
+Interior-Point Result:
+Simplex Result: 𝒁 = 𝟐𝟓/𝟐, 𝒙𝟏 = 𝟓, 𝒙𝟐 = 𝟎, 𝒙𝟑 = 𝟓/𝟐, 𝐬𝟏 = 𝟎, 𝒔𝟐 = 𝟐𝟎, 𝐬𝟑 = 0
 
 Sample 3:
-Interior-Point Result: z=56 at (6,4,0,0)
-Simplex Result: z=56 at (6,4,0,0)
+Interior-Point Result:
+Simplex Result: 𝒁 = 96, 𝒙𝟏 = 8, 𝒙𝟐 = 18, 𝐬𝟏 = 𝟎, 𝒔𝟐 = 0
 
 Sample 4:
-Interior-Point Result: z=38 at (0,5,0)
-Simplex Result: z=38 at (0,5,0)
+Interior-Point Result:
+Simplex Result: 𝒁 = -12, 𝒙𝟏 = 4, 𝒙𝟐 = 0, 𝐬𝟏 = 1, 𝒔𝟐 = 0
 
 Sample 5:
-Interior-Point Result: z=60 at (10,5,0,0)
-Simplex Result: z=60 at (10,5,0,0)
+Interior-Point Result:
+Simplex Result: 𝒁 = 213.333, 𝒙𝟏 = 0, 𝒙𝟐 = 13.333 , 𝒙𝟑 = 53.333, 𝐬𝟏 = 𝟎, 𝒔𝟐 = 0
