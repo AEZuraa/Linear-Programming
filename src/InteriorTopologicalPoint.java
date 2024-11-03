@@ -58,7 +58,8 @@ public class InteriorTopologicalPoint {
         } catch (DimensionsException e) {
             throw new DimensionsException("The amount of columns in diagonal solution matrix must be equal to the amount of coefficients in objective function vector");
         }
-        Matrix P = Matrix.Identity(ATilda.getColumns()).subtract(ATilda.getPseudoInverse(cmp.accuracy));
+        Matrix hui = ATilda.getPseudoInverse(cmp.accuracy);
+        Matrix P = Matrix.Identity(ATilda.getColumns()).subtract(hui);
         Vector cp = P.multiply(cTilda);
         double factor = alpha / Math.abs(cp.get(cp.theMost((a, b) -> a < b)));
         Vector xTilda = RowVector.one(currentPoint.size(), 1);
