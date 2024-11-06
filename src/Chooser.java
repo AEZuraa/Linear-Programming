@@ -1,3 +1,3 @@
-public interface TodoNameThis {
+public interface Chooser {
     Node choose(TransportationModel object);
 }
