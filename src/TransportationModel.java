@@ -46,6 +46,7 @@ public class TransportationModel {
         supply.set(item.row, supply.get(item.row) - provided);
         item.setProvided(provided);
         item.setRowTaken(supply.get(item.row) <= demand.get(item.col));
+        taken.add(item);
     }
 }
 
