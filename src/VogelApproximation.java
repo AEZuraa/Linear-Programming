@@ -2,6 +2,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class VogelApproximation implements Chooser {
+    @Override
+    public String toString() {
+        return "Vogel's approximation";
+    }
 
     @Override
     public Node choose(TransportationModel object) {
