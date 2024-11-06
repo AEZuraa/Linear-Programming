@@ -1,4 +1,4 @@
-public class RusselChooser implements TodoNameThis {
+public class RusselChooser implements Chooser {
     @Override
     public Node choose(TransportationModel object) {
         double[] rowMaximum = new double[object.costs.getRows()];
