@@ -5,7 +5,6 @@ public class NorthWestChooser implements Chooser {
     @Override
     public Node choose(TransportationModel object) {
         Node chosenNode = new Node(currentRow, currentCol);
-        object.taken.add(chosenNode);
 
         if (object.supply.get(currentRow) > object.demand.get(currentCol)) {
             currentRow++;
@@ -16,6 +15,10 @@ public class NorthWestChooser implements Chooser {
             currentCol++;
         }
         return chosenNode;
+    }
+
+    public String toString() {
+        return "NorthWest approximation";
     }
 }
 
