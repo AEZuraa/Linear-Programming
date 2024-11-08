@@ -41,7 +41,7 @@ public class TransportationModel {
     }
 
     public Matrix solve() throws ApplicationProblemException {
-        while (demand.any((a) -> a > 0d) || supply.any((a) -> a > 0d)) {
+        while (demand.any((a) -> a > 0d) && supply.any((a) -> a > 0d)) {
             iteration();
         }
         Matrix solution = new Matrix(costs.getRows(), costs.getColumns());
