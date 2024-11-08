@@ -79,8 +79,8 @@ public class TransportationModel {
         System.out.println("Enter demand values (vector):");
         RowVector demand = RowVector.scan(scanner);
 
-        // Read constraints matrix
-        System.out.println("Enter constraint functions coefficients (matrix):");
+        // Read costs matrix
+        System.out.println("Enter costs values (matrix):");
         Matrix costs;
         try {
             costs = Matrix.scan(scanner);
@@ -95,7 +95,7 @@ public class TransportationModel {
 
         };
 
-        // Solve using Interior Point method for alpha = 0.5 & alpha = 0.9
+        // Solve using different approximations
         for (Chooser method : methods) {
             try {
                 TransportationModel solver = new TransportationModel(costs.clone(), demand.clone(), supply.clone(), method);
