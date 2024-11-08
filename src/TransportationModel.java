@@ -42,9 +42,14 @@ public class TransportationModel {
 
 
     public Matrix solve() throws ApplicationProblemException {
-
-        while (taken.size() != Math.max(costs.getRows(), costs.getColumns())) {
+        Node takenAmount = new Node(costs.getRows(), costs.getColumns());
+        while (takenAmount.row!=0 && takenAmount.col!=0) {
             iteration();
+            if (taken.get(taken.size()-1).rowTaken){
+                takenAmount.row--;
+            } else {
+                takenAmount.col--;
+            }
         }
         Matrix solution = new Matrix(costs.getRows(), costs.getColumns());
         for (Node i : taken) {
