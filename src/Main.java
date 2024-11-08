@@ -14,7 +14,7 @@ public class Main {
         RowVector supply = RowVector.scan(scanner);
 
         // Read demand value vector
-        System.out.println("Enter supply values (vector):");
+        System.out.println("Enter demand values (vector):");
         RowVector demand = RowVector.scan(scanner);
 
         // Read constraints matrix
@@ -27,7 +27,9 @@ public class Main {
         }
 
         Chooser[] methods = {
-                new VogelApproximation(),
+                new NorthWestChooser(),
+                new VogelChooser(),
+                new RusselChooser()
 
         };
 
@@ -35,8 +37,8 @@ public class Main {
         for (Chooser method : methods) {
             try {
                 TransportationModel solver = new TransportationModel(costs.clone(), demand.clone(), supply.clone(), method);
-                double optimalValue = solver.solve();
-                System.out.println("The result of the " + method + " is " + optimalValue);
+                Matrix optimalValue = solver.solve();
+                System.out.println("The result of the " + method + " is\n" + optimalValue.toString());
 //            } catch (ApplicationProblemException e) {
 //                System.out.println("The method is not applicable!");
 //                return;

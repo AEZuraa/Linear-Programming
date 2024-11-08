@@ -28,15 +28,19 @@ public class TransportationModel {
         method = approximationMethod;
     }
 
-    public double solve() {
-        while (taken.size() == Math.max(costs.getRows(), costs.getColumns())) {
+    public Matrix getFeasibleSolution(ArrayList<Node> taken) {
+        Matrix solution = new Matrix(costs.getRows(), costs.getColumns());
+        for (Node i : taken) {
+            solution.set(i.row, i.col, i.provided);
+        }
+        return solution;
+    }
+
+    public Matrix solve() {
+        while (taken.size() != Math.max(costs.getRows(), costs.getColumns())) {
             iteration();
         }
-        double res = 0;
-        for (Node item : taken) {
-            res += costs.get(item.row, item.col) * item.provided;
-        }
-        return res;
+        return getFeasibleSolution(taken);
     }
 
     public void iteration() {

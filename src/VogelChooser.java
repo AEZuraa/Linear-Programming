@@ -1,7 +1,7 @@
 import java.util.List;
 import java.util.ArrayList;
 
-public class VogelApproximation implements Chooser {
+public class VogelChooser implements Chooser {
     @Override
     public String toString() {
         return "Vogel's approximation";
@@ -58,10 +58,10 @@ public class VogelApproximation implements Chooser {
                 indmax2 = i;
             }
         }
-        if (max1 > max2) {
-            double min = Double.MAX_VALUE;
-            int indmin = -1;
+        double min = Double.MAX_VALUE;
+        int indmin = -1;
 
+        if (max1 > max2) {
             for (int j = 0; j < object.costs.getColumns(); j++) {
                 double value = object.costs.get(indmax1, j);
 
@@ -70,20 +70,19 @@ public class VogelApproximation implements Chooser {
                     indmin = j;
                 }
             }
+
             return new Node(indmax1, indmin);
-        } else {
-            double min = Double.MAX_VALUE;
-            int indmin = -1;
-
-            for (int i = 0; i < object.costs.getRows(); i++) {
-                double value = object.costs.get(i, indmax2);
-
-                if (value < min) {
-                    min = value;
-                    indmin = i;
-                }
-            }
-            return new Node(indmin, indmax2);
         }
+
+        for (int i = 0; i < object.costs.getRows(); i++) {
+            double value = object.costs.get(i, indmax2);
+
+            if (value < min) {
+                min = value;
+                indmin = i;
+            }
+        }
+
+        return new Node(indmin, indmax2);
     }
 }

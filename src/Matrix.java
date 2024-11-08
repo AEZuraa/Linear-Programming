@@ -240,6 +240,21 @@ public class Matrix {
         return result;
     }
 
+    public String toString() {
+        String result = "";
+        for (int i = 0; i < rows; i++) {
+            result += '[';
+            for (int j = 0; j < columns; j++) {
+                result += this.get(i, j);
+                if (j < columns - 1) {
+                    result += " ";
+                }
+            }
+            result += "] ";
+        }
+        return result;
+    }
+
     // Subtract another matrix from this matrix
     public Matrix subtract(Matrix another) throws DimensionsException {
         return add(another.multiply(-1));
@@ -442,6 +457,7 @@ public class Matrix {
             set(i, i, 1d);
         }
     }
+
 
     private int getPivoting(int row) {
         int pivot = row;
