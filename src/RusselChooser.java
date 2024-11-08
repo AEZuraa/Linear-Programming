@@ -3,14 +3,16 @@ import Exceptions.ApplicationProblemException;
 public class RusselChooser implements Chooser {
     @Override
     public Node choose(TransportationModel object) throws ApplicationProblemException {
-        double[] colMaximum = new double[object.costs.getRows()];
-        double[] rowMaximum = new double[object.costs.getColumns()];
+        double[] rowMaximum = new double[object.costs.getRows()];
+        double[] colMaximum = new double[object.costs.getColumns()];
         for (int i = 0; i < object.costs.getRows(); i++) {
-            colMaximum[i] = object.costs.get(i, new ColumnVector(object.costs, i).theMost((a, b) -> a > b));
+            RowVector curRow = object.costs.get(i);
+            rowMaximum[i] = curRow.get(curRow.theMost((a, b) -> a > b));
         }
 
         for (int i = 0; i < object.costs.getColumns(); i++) {
-            rowMaximum[i] = object.costs.get(object.costs.get(i).theMost((a, b) -> a > b), i);
+            ColumnVector curCol = new ColumnVector(object.costs, i);
+            colMaximum[i] = curCol.theMost((a, b) -> a > b);
         }
 
         Matrix delta = new Matrix(object.costs.getRows(), object.costs.getColumns());
@@ -18,7 +20,7 @@ public class RusselChooser implements Chooser {
         for (int i = 0; i < object.costs.getRows(); i++) {
             for (int j = 0; j < object.costs.getColumns(); j++) {
                 double currentCost = object.costs.get(i, j);
-                double result = currentCost - colMaximum[i] - rowMaximum[j];
+                double result = currentCost - rowMaximum[i] - colMaximum[j];
                 delta.set(i, j, result);
             }
         }
