@@ -40,10 +40,25 @@ public class TransportationModel {
         method = approximationMethod;
     }
 
+    private boolean isAllDemandAndSupplySatisfied() {
+        for (int i = 0; i < demand.size(); i++) {
+            if (demand.get(i) > 0) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < supply.size(); i++) {
+            if (supply.get(i) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public Matrix solve() throws ApplicationProblemException {
 
-        while (taken.size() != Math.max(costs.getRows(), costs.getColumns())) {
+        while (!isAllDemandAndSupplySatisfied()) {
             iteration();
         }
         Matrix solution = new Matrix(costs.getRows(), costs.getColumns());
