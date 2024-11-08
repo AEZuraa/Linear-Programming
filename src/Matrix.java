@@ -241,18 +241,13 @@ public class Matrix {
     }
 
     public String toString() {
-        String result = "";
-        for (int i = 0; i < rows; i++) {
-            result += '[';
-            for (int j = 0; j < columns; j++) {
-                result += this.get(i, j);
-                if (j < columns - 1) {
-                    result += " ";
-                }
-            }
-            result += "] ";
+        StringBuilder result = new StringBuilder();
+        result.append("[\n");
+        for (int i = 0; i < getRows(); i++) {
+            result.append("\t[").append(get(i)).append("],\n");
         }
-        return result;
+        result.append(']');
+        return result.toString();
     }
 
     // Subtract another matrix from this matrix

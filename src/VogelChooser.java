@@ -1,3 +1,5 @@
+import Exceptions.ApplicationProblemException;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -8,7 +10,7 @@ public class VogelChooser implements Chooser {
     }
 
     @Override
-    public Node choose(TransportationModel object) {
+    public Node choose(TransportationModel object) throws ApplicationProblemException {
         List<Double> smallestElementsDifferencesRows = new ArrayList<>();
         List<Double> smallestElementsDifferencesCols = new ArrayList<>();
         for (int i = 0; i < object.costs.getRows(); i++) {

@@ -1,5 +1,7 @@
+import Exceptions.ApplicationProblemException;
 import Exceptions.DimensionsException;
 import Exceptions.ImproperConversionException;
+import Exceptions.TransportUnbalancedProblemException;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -16,12 +18,20 @@ public class TransportationModel {
                                Vector demand,
                                Vector supply,
                                Chooser approximationMethod
-    ) throws ImproperConversionException {
+    ) throws ImproperConversionException, ApplicationProblemException, TransportUnbalancedProblemException {
         if (costs.getRows() != supply.size() || costs.getColumns() != demand.size()) {
             throw new ImproperConversionException("Wrong input data: demand consist from "
                     + demand.size() + " items; supply from "
                     + supply.size()
                     + " items; \nWhile costs matrix is (" + costs.getRows() + "x" + costs.getColumns() + ")");
+        }
+        try {
+            // sum of all elements of a vector is a dot product with vector consist from only ones (\sum(a_i*1))
+            if (demand.multiply(RowVector.one(demand.size(), 1d))
+                    != supply.multiply(RowVector.one(supply.size(), 1d))) {
+                throw new TransportUnbalancedProblemException("Supply and demand is not equal");
+            }
+        } catch (DimensionsException ignored) {
         }
         this.costs = costs;
         this.demand = demand;
@@ -30,7 +40,12 @@ public class TransportationModel {
         method = approximationMethod;
     }
 
-    public Matrix getFeasibleSolution(ArrayList<Node> taken) {
+
+    public Matrix solve() throws ApplicationProblemException {
+
+        while (taken.size() != Math.max(costs.getRows(), costs.getColumns())) {
+            iteration();
+        }
         Matrix solution = new Matrix(costs.getRows(), costs.getColumns());
         for (Node i : taken) {
             solution.set(i.row, i.col, i.provided);
@@ -38,14 +53,7 @@ public class TransportationModel {
         return solution;
     }
 
-    public Matrix solve() {
-        while (taken.size() != Math.max(costs.getRows(), costs.getColumns())) {
-            iteration();
-        }
-        return getFeasibleSolution(taken);
-    }
-
-    public void iteration() {
+    public void iteration() throws ApplicationProblemException {
         Node item = method.choose(this);
         double provided = Math.min(supply.get(item.row), demand.get(item.col));
         demand.set(item.col, demand.get(item.col) - provided);
@@ -57,6 +65,7 @@ public class TransportationModel {
 
     /**
      * Solution for 3rd homework
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {
@@ -90,13 +99,14 @@ public class TransportationModel {
         for (Chooser method : methods) {
             try {
                 TransportationModel solver = new TransportationModel(costs.clone(), demand.clone(), supply.clone(), method);
-                Matrix optimalValue = solver.solve();
-                System.out.println("The result of the " + method + " is\n" + optimalValue.toString());
-//            } catch (ApplicationProblemException e) {
-//                System.out.println("The method is not applicable!");
-//                return;
-//            } catch (DimensionsException | SingularityException e) {
-//                System.out.println("An error occurred during Interior Point calculation: " + e.getMessage());
+                Matrix solution = solver.solve();
+                System.out.println("The result of the " + method + " is\n" + solution);
+            } catch (ApplicationProblemException e) {
+                System.out.println("The " + method + " is not applicable!");
+                return;
+            } catch (TransportUnbalancedProblemException e) {
+                System.out.println("The problem is not balanced!");
+                return;
             } catch (ImproperConversionException e) {
                 throw new RuntimeException(e);
             }
