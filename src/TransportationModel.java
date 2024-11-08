@@ -61,6 +61,18 @@ public class TransportationModel {
         taken.add(item);
     }
 
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < costs.getRows(); i++) {
+            sb.append(costs.get(i)).append("\t|\t").append(supply.get(i)).append('\n');
+        }
+        // TODO: dynamically sized bottom line
+        sb.append("-------------------\n");
+        sb.append(demand).append('\n');
+        return sb.toString();
+    }
+
     /**
      * Solution for 3rd homework
      *
@@ -89,14 +101,16 @@ public class TransportationModel {
         Chooser[] methods = {
                 new NorthWestChooser(),
                 new VogelChooser(),
-                new RusselChooser()
-
+                new RusselChooser(),
         };
 
         // Solve using different approximations
         for (Chooser method : methods) {
             try {
                 TransportationModel solver = new TransportationModel(costs.clone(), demand.clone(), supply.clone(), method);
+                if (method==methods[0]){
+                    System.out.println(solver);
+                }
                 Matrix solution = solver.solve();
                 System.out.println("The result of the " + method + " is\n" + solution);
             } catch (ApplicationProblemException e) {
