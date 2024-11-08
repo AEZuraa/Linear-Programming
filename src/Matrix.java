@@ -242,11 +242,11 @@ public class Matrix {
 
     public String toString() {
         StringBuilder result = new StringBuilder();
-        result.append("[\n");
+        result.append("[");
         for (int i = 0; i < getRows(); i++) {
-            result.append("\t[").append(get(i)).append("],\n");
+            result.append("[").append(get(i)).append("], ");
         }
-        result.append(']');
+        result.deleteCharAt(result.length()-1).deleteCharAt(result.length()-1).append(']');
         return result.toString();
     }
 

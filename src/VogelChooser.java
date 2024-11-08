@@ -13,29 +13,31 @@ public class VogelChooser implements Chooser {
     public Node choose(TransportationModel object) throws ApplicationProblemException {
         List<Double> smallestElementsDifferencesRows = new ArrayList<>();
         List<Double> smallestElementsDifferencesCols = new ArrayList<>();
-        for (int i = 0; i < object.costs.getRows(); i++) {
+        for (int i = 0; i < Math.max(object.costs.getRows(), object.costs.getColumns()); i++) {
             double minR1 = Double.MAX_VALUE;
             double minR2 = Double.MAX_VALUE;
 
             double minC1 = Double.MAX_VALUE;
             double minC2 = Double.MAX_VALUE;
 
-            for (int j = 0; j < object.costs.getColumns(); j++) {
-                double valueR = object.costs.get(i, j);
-                double valueC = object.costs.get(j, i);
-
-                if (valueR < minR1) {
-                    minR2 = minR1;
-                    minR1 = valueR;
-                } else if (valueR < minR2) {
-                    minR2 = valueR;
+            for (int j = 0; j < Math.max(object.costs.getRows(), object.costs.getColumns()); j++) {
+                if (i < object.costs.getRows() && j < object.costs.getColumns()) {
+                    double valueR = object.costs.get(i, j);
+                    if (valueR < minR1) {
+                        minR2 = minR1;
+                        minR1 = valueR;
+                    } else if (valueR < minR2) {
+                        minR2 = valueR;
+                    }
                 }
-
-                if (valueC < minC1) {
-                    minC2 = minC1;
-                    minC1 = valueC;
-                } else if (valueC < minC2) {
-                    minC2 = valueC;
+                if (i < object.costs.getColumns() && j < object.costs.getRows()) {
+                    double valueC = object.costs.get(j, i);
+                    if (valueC < minC1) {
+                        minC2 = minC1;
+                        minC1 = valueC;
+                    } else if (valueC < minC2) {
+                        minC2 = valueC;
+                    }
                 }
             }
             smallestElementsDifferencesRows.add(Math.abs(minR1-minR2));
