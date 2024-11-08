@@ -1,7 +1,9 @@
 import Exceptions.ApplicationProblemException;
+import Exceptions.DimensionsException;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Scanner;
 
 /** Class representing a matrix used in the Simplex method for solving linear optimization problems */
 public class SimplexMatrix {
@@ -164,5 +166,50 @@ public class SimplexMatrix {
      */
     public double getObjectiveFunctionValue() {
         return methodMatrix.get(0, methodMatrix.getColumns() - 1) * (mode.equals(OptimizationMode.MAX) ? 1 : -1);
+    }
+
+    /**
+     * Solution for 1st homework
+     * @param args command line arguments
+     */
+    public static void main(String[] args) {
+        // Reading the objective function, constraints matrix, and right-hand side values from input
+        Scanner scanner = new Scanner(System.in);
+        OptimizationMode mode;
+        while (true) {
+            try {
+                System.out.println("Enter \"min\" for minimization either \"max\" for maximization");
+                mode = OptimizationMode.valueOf(scanner.nextLine().trim().toUpperCase());
+                break;
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+        System.out.println("Enter objective function coefficients (vector):");
+        Vector objectiveFunction = RowVector.scan(scanner);
+        System.out.println("Enter constrains functions coefficients (matrix):");
+        Matrix constrains;
+        try {
+            constrains = Matrix.scan(scanner);
+        } catch (DimensionsException ignored){
+            throw new RuntimeException("Improper input, constrains is not a proper matrix");
+            // It is assumed, that input is a correct matrix? so than exception is impossible
+        }
+        System.out.println("Enter right hand sides for constrains (vector):");
+        Vector rightHandSide = RowVector.scan(scanner);
+        try {
+            // Create SimplexMatrix and perform iterations to find the optimal solution
+            SimplexMatrix solution;
+            solution = new SimplexMatrix(objectiveFunction, constrains, rightHandSide, 0.0001, mode);
+            solution.solve();
+            System.out.println(
+                    (mode.equals(OptimizationMode.MAX) ? "Maximum" : "Minimum")
+                            + " value of the objective function:\n"
+                            + solution.getObjectiveFunctionValue()
+                            + "\nAt the point:\n"
+                            + new VectorSlice(solution.getObjectiveFunction(), 0, objectiveFunction.size())
+            );
+        } catch (ApplicationProblemException e) {
+            System.out.println("The method is not applicable!");
+        }
     }
 }
