@@ -22,21 +22,39 @@ public class VogelChooser implements Chooser {
 
             for (int j = 0; j < Math.max(object.costs.getRows(), object.costs.getColumns()); j++) {
                 if (i < object.costs.getRows() && j < object.costs.getColumns()) {
-                    double valueR = object.costs.get(i, j);
-                    if (valueR < minR1) {
-                        minR2 = minR1;
-                        minR1 = valueR;
-                    } else if (valueR < minR2) {
-                        minR2 = valueR;
+                    boolean accessible = true;
+                    for (Node n: object.taken) {
+                        if ((n.row == i && n.col == j) || (n.rowTaken && n.row == i) || (!n.rowTaken && n.col == j)) {
+                            accessible = false;
+                            break;
+                        }
+                    }
+                    if (accessible) {
+                        double valueR = object.costs.get(i, j);
+                        if (valueR < minR1) {
+                            minR2 = minR1;
+                            minR1 = valueR;
+                        } else if (valueR < minR2) {
+                            minR2 = valueR;
+                        }
                     }
                 }
                 if (i < object.costs.getColumns() && j < object.costs.getRows()) {
-                    double valueC = object.costs.get(j, i);
-                    if (valueC < minC1) {
-                        minC2 = minC1;
-                        minC1 = valueC;
-                    } else if (valueC < minC2) {
-                        minC2 = valueC;
+                    boolean accessible = true;
+                    for (Node n: object.taken) {
+                        if ((n.row == j && n.col == i) || (n.rowTaken && n.row == j) || (!n.rowTaken && n.col == i)) {
+                            accessible = false;
+                            break;
+                        }
+                    }
+                    if (accessible) {
+                        double valueC = object.costs.get(j, i);
+                        if (valueC < minC1) {
+                            minC2 = minC1;
+                            minC1 = valueC;
+                        } else if (valueC < minC2) {
+                            minC2 = valueC;
+                        }
                     }
                 }
             }
@@ -67,11 +85,20 @@ public class VogelChooser implements Chooser {
 
         if (max1 > max2) {
             for (int j = 0; j < object.costs.getColumns(); j++) {
-                double value = object.costs.get(indmax1, j);
+                boolean accessible = true;
+                for (Node n: object.taken) {
+                    if ((n.row == indmax1 && n.col == j) || (n.rowTaken && n.row == indmax1) || (!n.rowTaken && n.col == j)) {
+                        accessible = false;
+                        break;
+                    }
+                }
+                if (accessible) {
+                    double value = object.costs.get(indmax1, j);
 
-                if (value < min) {
-                    min = value;
-                    indmin = j;
+                    if (value < min) {
+                        min = value;
+                        indmin = j;
+                    }
                 }
             }
 
@@ -79,11 +106,20 @@ public class VogelChooser implements Chooser {
         }
 
         for (int i = 0; i < object.costs.getRows(); i++) {
-            double value = object.costs.get(i, indmax2);
+            boolean accessible = true;
+            for (Node n: object.taken) {
+                if ((n.row == i && n.col == indmax2) || (n.rowTaken && n.row == i) || (!n.rowTaken && n.col == indmax2)) {
+                    accessible = false;
+                    break;
+                }
+            }
+            if (accessible) {
+                double value = object.costs.get(i, indmax2);
 
-            if (value < min) {
-                min = value;
-                indmin = i;
+                if (value < min) {
+                    min = value;
+                    indmin = i;
+                }
             }
         }
 
